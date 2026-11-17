@@ -1,0 +1,640 @@
+<title>Taller de Luz</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Mulish:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: banco de trabajo nocturno. Izquierda, lo que tú decides; derecha, el boceto y la ficha; abajo, la prueba de 5 segundos y el historial. */
+:root {
+  --noche: #14122b;
+  --noche-elev: #1d1a3c;
+  --noche-alta: #29255a;
+  --marfil: #f7f0e3;
+  --marfil-suave: #b9b2cf;
+  --oro: #e9b949;
+  --destello: #fff4d6;
+  --filete: rgba(247, 240, 227, 0.16);
+  --aviso: #f2a37a;
+  --bien: #9fd3a8;
+  --f-display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --f-texto: Mulish, "Nunito Sans", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--noche); color: var(--marfil); font-family: var(--f-texto); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-block: 40px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 56px; }
+
+header { display: grid; gap: 14px; max-width: 760px; }
+.canal { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--marfil-suave); }
+.canal svg { width: 28px; height: 28px; flex: none; }
+h1 { font-family: var(--f-display); font-weight: 600; font-size: clamp(48px, 8vw, 84px); line-height: .92; margin: 0; letter-spacing: -.01em; text-wrap: balance; }
+h1 em, h2 em { font-style: italic; font-weight: 500; color: var(--oro); }
+.lead { margin: 0; color: var(--marfil-suave); max-width: 62ch; font-size: 16px; }
+
+h2 { font-family: var(--f-display); font-weight: 600; font-size: 38px; line-height: 1; margin: 0; text-wrap: balance; }
+.label { font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--marfil-suave); }
+
+.mesa { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: 40px; align-items: start; }
+@media (max-width: 900px) { .mesa { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { display: grid; gap: 22px; }
+.campo { display: grid; gap: 7px; }
+.campo label { font-size: 11px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: var(--marfil-suave); }
+.campo .ayuda { font-size: 13px; color: var(--marfil-suave); margin: 0; }
+input[type=text], select { width: 100%; font: 600 16px/1.3 var(--f-texto); color: var(--marfil); background: var(--noche-elev); border: 1px solid var(--filete); border-radius: 0; padding: 12px 14px; }
+input[type=text]::placeholder { color: #8d86a8; font-weight: 400; }
+select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--oro) 50%), linear-gradient(135deg, var(--oro) 50%, transparent 50%); background-position: calc(100% - 20px) 52%, calc(100% - 14px) 52%; background-size: 6px 6px; background-repeat: no-repeat; padding-right: 36px; }
+input:focus-visible, select:focus-visible, button:focus-visible { outline: 2px solid var(--oro); outline-offset: 2px; }
+.dos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 420px) { .dos { grid-template-columns: 1fr; } }
+
+.acciones { display: flex; flex-wrap: wrap; gap: 10px; }
+button { font: 700 14px/1 var(--f-texto); letter-spacing: .02em; cursor: pointer; border-radius: 999px; padding: 13px 20px; border: 1px solid var(--filete); background: transparent; color: var(--marfil); }
+button:hover { border-color: var(--oro); }
+button.primario { background: var(--oro); border-color: var(--oro); color: var(--noche); }
+button.primario:hover { background: var(--destello); }
+button.chico { padding: 7px 12px; font-size: 12px; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+
+.reglas { list-style: none; margin: 0; padding: 18px 0 0; border-top: 1px solid var(--filete); display: grid; gap: 10px; }
+.reglas li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; font-size: 14px; line-height: 1.45; }
+.reglas li::before { content: ""; width: 10px; height: 10px; margin-top: 5px; border-radius: 50%; background: var(--bien); }
+.reglas li.aviso::before { background: var(--aviso); }
+.reglas li.nota::before { background: transparent; border: 1.5px solid var(--marfil-suave); }
+.reglas li.aviso { color: var(--aviso); }
+
+.lienzo { display: grid; gap: 10px; }
+.boceto { width: 100%; max-width: 100%; aspect-ratio: 16 / 9; display: block; background: var(--noche-elev); }
+.pie { font-size: 13px; color: var(--marfil-suave); margin: 0; }
+
+.ficha { margin: 6px 0 0; display: grid; grid-template-columns: 150px minmax(0, 1fr); border-top: 1px solid var(--filete); }
+.ficha dt, .ficha dd { padding: 13px 0; border-bottom: 1px solid var(--filete); margin: 0; }
+.ficha dt { font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: var(--marfil-suave); padding-top: 16px; }
+.ficha dd { min-width: 0; }
+.ficha dd strong { font-weight: 700; }
+.ficha dd .sub { display: block; color: var(--marfil-suave); font-size: 14px; }
+@media (max-width: 520px) { .ficha { grid-template-columns: minmax(0, 1fr); } .ficha dt { border-bottom: 0; padding-bottom: 0; } }
+.punto-hora { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; border: 1px solid var(--filete); }
+
+.seccion { display: grid; gap: 22px; }
+.seccion-cab { display: grid; gap: 8px; max-width: 720px; }
+.seccion-cab p { margin: 0; color: var(--marfil-suave); }
+.prueba { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 18px; }
+.prueba figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+.prueba figure svg { width: 100%; aspect-ratio: 16/9; display: block; }
+.prueba figcaption { font-size: 12px; color: var(--marfil-suave); line-height: 1.4; }
+.prueba figure.nueva svg { outline: 2px solid var(--oro); outline-offset: 3px; }
+.prueba figure.nueva figcaption { color: var(--oro); font-weight: 700; }
+.hueco { aspect-ratio: 16/9; border: 1px dashed var(--filete); display: grid; place-items: center; text-align: center; padding: 12px; font-size: 13px; color: #8d86a8; }
+
+.historial { display: grid; }
+.fila { display: grid; grid-template-columns: 96px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--filete); }
+.fila:first-child { border-top: 1px solid var(--filete); }
+.fila svg { width: 96px; aspect-ratio: 16/9; display: block; }
+.fila .t { font-weight: 700; overflow-wrap: anywhere; }
+.fila .m { font-size: 13px; color: var(--marfil-suave); }
+.fila .quitar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; font-size: 13px; }
+@media (max-width: 520px) { .fila { grid-template-columns: 72px minmax(0, 1fr); } .fila svg { width: 72px; } .fila .quitar { grid-column: 2; justify-content: flex-start; } }
+.vacio { border: 1px dashed var(--filete); padding: 22px; color: var(--marfil-suave); max-width: 640px; }
+.vacio strong { color: var(--marfil); }
+
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--destello); color: var(--noche); font-weight: 700; padding: 12px 20px; border-radius: 999px; box-shadow: 0 0 24px 6px rgba(233,185,73,.4); z-index: 20; }
+.estado { font-size: 13px; color: var(--marfil-suave); margin: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .boceto .trazo { stroke-dasharray: 2400; stroke-dashoffset: 2400; animation: dibujar 2.2s cubic-bezier(.2,.7,.2,1) forwards; }
+  .boceto .encender { opacity: 0; animation: encender .6s ease-out 1.9s forwards; }
+  @keyframes dibujar { to { stroke-dashoffset: 0; } }
+  @keyframes encender { to { opacity: 1; } }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="canal">
+      <svg viewBox="0 0 28 28" aria-hidden="true"><line x1="14" y1="0" x2="14" y2="15" stroke="#e9b949" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="19" r="4" fill="#fff4d6" stroke="#e9b949" stroke-width="1.5"/><circle cx="14" cy="14" r="12.5" fill="none" stroke="#e9b949" stroke-width="1" opacity=".55"/></svg>
+      Oraciones: Mi Conexión Divina
+    </div>
+    <h1>Taller de <em>Luz</em></h1>
+    <p class="lead">Escribe el tema de tu próxima oración. El taller propone la Hora, la composición, la ruta del hilo y el titular, revisando tus últimos videos para que cada uno sea reconocible como tuyo y distinto de los anteriores.</p>
+  </header>
+
+  <section class="mesa" aria-label="Planificar un video">
+    <div class="panel">
+      <div class="campo">
+        <label for="tema">Tema de la oración</label>
+        <input type="text" id="tema" placeholder="Ej.: oración para dormir con ansiedad" autocomplete="off">
+        <p class="ayuda" id="tema-ayuda">El taller elige la Hora según el tema.</p>
+      </div>
+      <div class="dos">
+        <div class="campo">
+          <label for="sel-hora">Hora</label>
+          <select id="sel-hora"></select>
+        </div>
+        <div class="campo">
+          <label for="sel-familia">Composición</label>
+          <select id="sel-familia"></select>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="titular">Titular de la miniatura</label>
+        <input type="text" id="titular" autocomplete="off">
+        <p class="ayuda">De 2 a 4 palabras. Marca la palabra-luz con asteriscos: Duerme en *paz*</p>
+      </div>
+      <div class="campo">
+        <label for="etiqueta">Etiqueta (opcional)</label>
+        <input type="text" id="etiqueta" autocomplete="off">
+      </div>
+      <div class="acciones">
+        <button type="button" class="primario" id="otra">Otra propuesta</button>
+        <button type="button" id="copiar">Copiar ficha</button>
+      </div>
+      <ul class="reglas" id="reglas" aria-label="Revisión contra tus últimos videos"></ul>
+    </div>
+
+    <div class="lienzo">
+      <svg class="boceto" id="boceto" viewBox="0 0 1280 720" role="img" aria-label="Boceto de la miniatura"></svg>
+      <p class="pie">Boceto a escala de 1280×720. Las zonas de color representan tu foto; la ficha dice qué foto va ahí.</p>
+      <dl class="ficha" id="ficha"></dl>
+      <div class="campo" style="margin-top:18px">
+        <label for="titulo">Título del video en YouTube</label>
+        <input type="text" id="titulo" placeholder="Ej.: Oración para dormir en paz cuando la ansiedad no te deja descansar" autocomplete="off">
+      </div>
+      <div class="acciones" style="margin-top:12px">
+        <button type="button" class="primario" id="guardar">Guardar en el historial</button>
+      </div>
+      <p class="estado" id="estado-guardar"></p>
+    </div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-prueba">
+    <div class="seccion-cab">
+      <span class="label">Antes de publicar</span>
+      <h2 id="t-prueba">La prueba de 5 <em>segundos</em></h2>
+      <p>Tu propuesta junto a tus últimos seis videos. Debe verse del canal y no debe confundirse con ninguno.</p>
+    </div>
+    <div class="prueba" id="prueba"></div>
+  </section>
+
+  <section class="seccion" aria-labelledby="t-hist">
+    <div class="seccion-cab">
+      <span class="label">Lo que ya publicaste</span>
+      <h2 id="t-hist">Historial de <em>videos</em></h2>
+    </div>
+    <div id="historial"></div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- La identidad (tokens del sistema de diseño) ---------- */
+  const HORAS = {
+    noche: { nombre: "Noche", para: "para dormir, examen del día, paz",
+      fondo: "#14122b", elev: "#221f45", atm: "#4b3f8f", texto: "#f7f0e3", suave: "#b9b2cf", hilo: "#e9b949", destello: "#fff4d6",
+      luz: "en penumbra azulada, con una sola fuente de luz cálida",
+      etiquetas: ["ORACIÓN DE LA NOCHE", "PARA DORMIR EN PAZ", "ANTES DE DORMIR"],
+      titulares: ["Duerme en *paz*", "Descansa en *paz*", "Esta noche, *calma*", "En tus manos *descanso*", "Duerme, Él *vela*"],
+      kw: ["noche", "dormir", "sueno", "descans", "insomnio", "acostar", "desvelo"] },
+    amanecer: { nombre: "Amanecer", para: "oración de la mañana, trabajo, hijos",
+      fondo: "#f6e7da", elev: "#efd6c4", atm: "#e8a27c", texto: "#2a1e2e", suave: "#6a5260", hilo: "#9a6a12", destello: "#fffaf0",
+      luz: "con sol bajo de primera hora y aire rosado",
+      etiquetas: ["ORACIÓN DE LA MAÑANA", "PARA EMPEZAR EL DÍA", "POR MI TRABAJO"],
+      titulares: ["Un día *nuevo*", "Dame *fuerza* hoy", "Empiezo con tu *luz*", "Hoy *contigo*, Señor", "Bendice este *día*"],
+      kw: ["manana", "amanecer", "trabajo", "hijo", "empezar", "despert", "estudi", "examen", "empleo", "dia"] },
+    proteccion: { nombre: "Protección", para: "Salmo 91, el hogar, contra el miedo",
+      fondo: "#0e2a2e", elev: "#16393e", atm: "#2f7378", texto: "#f3f0e6", suave: "#a9c6c3", hilo: "#e9b949", destello: "#fff4d6",
+      luz: "bajo un cielo verdoso de tormenta que se abre en un claro",
+      etiquetas: ["SALMO 91", "ORACIÓN DE PROTECCIÓN", "POR MI HOGAR"],
+      titulares: ["Bajo tu *refugio*", "Dios es mi *escudo*", "Mi casa en tu *amparo*", "Señor, *guárdame*", "No temeré, eres mi *roca*"],
+      kw: ["protec", "salmo 91", "miedo", "peligro", "hogar", "casa", "familia", "enemig", "mal", "amparo", "viaje"] },
+    gratitud: { nombre: "Gratitud", para: "acción de gracias, alabanza, la mesa",
+      fondo: "#341a12", elev: "#47261b", atm: "#c0673a", texto: "#f8eee2", suave: "#e2c3ae", hilo: "#f0c35a", destello: "#fff1cf",
+      luz: "con luz de tarde color miel",
+      etiquetas: ["ACCIÓN DE GRACIAS", "ALABANZA", "BENDICIÓN DE LA MESA"],
+      titulares: ["*Gracias*, Señor", "Todo es *bendición*", "Mi alma te *alaba*", "Hoy digo *gracias*", "Tu amor me *basta*"],
+      kw: ["gracias", "gratitud", "agradec", "alaban", "alabar", "bendic", "mesa", "comida", "cumple", "aniversario"] },
+    sanacion: { nombre: "Sanación", para: "salud, duelo, ansiedad, consuelo",
+      fondo: "#17271f", elev: "#22362c", atm: "#7fa38a", texto: "#f2f1e6", suave: "#b8cdbe", hilo: "#e9b949", destello: "#fff4d6",
+      luz: "con luz suave de mañana filtrada por cortinas claras",
+      etiquetas: ["ORACIÓN DE SANACIÓN", "POR LOS ENFERMOS", "PARA EL CONSUELO"],
+      titulares: ["Dios te *sana*", "Aún hay *esperanza*", "Recibe *consuelo*", "Señor, *sáname*", "Tu dolor tiene *alivio*"],
+      kw: ["sana", "salud", "enferm", "duelo", "ansiedad", "depresi", "consuelo", "hospital", "dolor", "triste", "luto", "operaci", "cancer"] }
+  };
+  const ORDEN_HORAS = ["noche", "amanecer", "proteccion", "gratitud", "sanacion"];
+
+  const FAMILIAS = {
+    manos: { nombre: "Manos", dir: "vertical", ruta: "Cae vertical desde arriba y se posa entre las manos",
+      fotos: ["manos juntas sobre una Biblia abierta", "manos sosteniendo un rosario de madera", "manos de una persona mayor entrelazadas", "dos manos abiertas hacia arriba", "una mano sobre el hombro de otra persona", "manos de un niño juntas para orar"] },
+    horizonte: { nombre: "Horizonte", dir: "horizontal", ruta: "Es la línea del horizonte y termina en el sol",
+      fotos: ["el mar en calma", "un campo de trigo", "una sierra a lo lejos", "un lago quieto", "la ciudad vista desde un cerro", "un camino de tierra que se pierde"] },
+    llama: { nombre: "Llama", dir: "curva", ruta: "Nace de la llama y sube fuera del cuadro (la llama hace de punto)",
+      fotos: ["una vela blanca sobre madera", "una lámpara de aceite", "una vela junto a una ventana", "velas encendidas en una capilla", "una vela entre las manos", "una vela junto a una foto familiar"] },
+    cielo: { nombre: "Cielo abierto", dir: "diagonal", ruta: "Diagonal larga desde la esquina superior hasta la figura",
+      fotos: ["una persona pequeña en un camino bajo un cielo inmenso", "un árbol solo en una colina", "una silueta sentada en una roca", "un niño mirando las nubes", "una cruz pequeña en lo alto de un cerro", "una mujer de espaldas frente al valle"] },
+    ventana: { nombre: "Ventana", dir: "diagonal", ruta: "Entra por la ventana, sigue el haz y termina en lo iluminado",
+      fotos: ["luz entrando por una ventana a una habitación", "un haz de luz en una iglesia vacía", "una puerta entreabierta con luz", "un vitral iluminado", "una mesa junto a la ventana con una taza", "una cama tendida bajo la ventana"] },
+    palabra: { nombre: "Palabra", dir: "horizontal", ruta: "Subraya el titular y termina después de la palabra-luz",
+      fotos: ["sin foto: solo tipografía sobre el fondo de la Hora"] }
+  };
+  const ORDEN_FAMILIAS = ["manos", "horizonte", "llama", "cielo", "ventana", "palabra"];
+  const POSICIONES = { izquierda: 320, centro: 640, derecha: 960 };
+
+  const MUSICA = ["Piano solo en Re mayor, muy lento", "Cuerdas suaves en Sol mayor", "Pad cálido con piano en Mi bemol", "Guitarra de nylon en La menor", "Piano y violonchelo en Fa mayor", "Arpa y pad en Do mayor", "Piano con eco largo en Si bemol", "Cuarteto de cuerdas en Re menor"];
+  const BENDICIONES = ["Que la paz de Dios te acompañe.", "Que su luz guarde tu camino.", "Descansa: Él vela por ti.", "Que el Señor te bendiga y te guarde.", "Ve en paz. No estás solo.", "Que esta luz te acompañe hoy.", "Dios camina contigo.", "Que su amor sea tu descanso."];
+
+  /* ---------- Estado ---------- */
+  let historial = [];          // más reciente primero
+  let actual = null;           // propuesta en pantalla
+  let db = null, puedeEscribir = false;
+  const $ = (id) => document.getElementById(id);
+
+  const azar = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  const norm = (s) => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const palabraLuz = (t) => { const m = /\*([^*]+)\*/.exec(t || ""); return m ? norm(m[1].trim()) : ""; };
+
+  function detectarHora(tema) {
+    const t = norm(tema);
+    if (!t.trim()) return null;
+    let mejor = null, puntos = 0;
+    for (const id of ORDEN_HORAS) {
+      const p = HORAS[id].kw.filter((k) => t.includes(k)).length;
+      if (p > puntos) { puntos = p; mejor = id; }
+    }
+    return mejor;
+  }
+
+  /* ---------- Reglas de rotación ---------- */
+  function ladoTitular(fam, pos) {
+    if (fam === "palabra") return "izquierda";
+    if (pos === "izquierda") return "derecha";
+    return "izquierda";
+  }
+
+  function candidatos(horaFija, famFija) {
+    const out = [];
+    const horas = horaFija ? [horaFija] : ORDEN_HORAS;
+    const fams = famFija ? [famFija] : ORDEN_FAMILIAS;
+    for (const hora of horas) for (const fam of fams) {
+      const poses = fam === "palabra" ? ["texto"] : Object.keys(POSICIONES);
+      for (const pos of poses) for (const tv of ["arriba", "abajo"]) {
+        const lado = ladoTitular(fam, pos);
+        if (fam === "horizonte" && tv === "abajo") continue;          // el horizonte ocupa la parte baja
+        if (lado === "derecha" && tv === "abajo") continue;           // la esquina inferior derecha es de YouTube
+        if (fam === "palabra" && tv === "abajo") continue;
+        out.push({ hora, familia: fam, pos, tv, lado, dir: FAMILIAS[fam].dir });
+      }
+    }
+    return out;
+  }
+
+  function penalizar(c, horaFija) {
+    const [h0, h1] = historial;
+    let p = 0;
+    if (c.familia === "palabra") p += 6;
+    if (!h0) return p;
+    if (c.hora === h0.hora && c.familia === h0.familia) p += 100;
+    if (c.familia === h0.familia) p += 20;
+    if (h1 && c.familia === h1.familia) p += 8;
+    if (!horaFija && c.hora === h0.hora) p += 15;
+    if (c.dir === h0.dir) p += 30;
+    if (c.pos === h0.pos) p += 25;
+    if (c.lado === h0.lado && c.tv === h0.tv) p += 6;
+    return p;
+  }
+
+  function elegirSin(lista, usados) {
+    const libres = lista.filter((x) => !usados.includes(x));
+    return azar(libres.length ? libres : lista);
+  }
+
+  function proponer(evitar) {
+    const tema = $("tema").value;
+    const selH = $("sel-hora").value, selF = $("sel-familia").value;
+    const horaFija = selH !== "auto" ? selH : detectarHora(tema);
+    const famFija = selF !== "auto" ? selF : null;
+    const cs = candidatos(horaFija, famFija).map((c) => ({ ...c, p: penalizar(c, horaFija) }));
+    const min = Math.min(...cs.map((c) => c.p));
+    let mejores = cs.filter((c) => c.p <= min + 5);
+    if (evitar && mejores.length > 1) {
+      const otros = mejores.filter((c) => !(c.hora === evitar.hora && c.familia === evitar.familia && c.pos === evitar.pos));
+      if (otros.length) mejores = otros;
+    }
+    const c = azar(mejores);
+    const H = HORAS[c.hora], F = FAMILIAS[c.familia];
+    const recientes = historial.slice(0, 6);
+    const luzUsadas = recientes.map((v) => palabraLuz(v.titular));
+    const tits = H.titulares.filter((t) => !luzUsadas.includes(palabraLuz(t)));
+    const fotosUsadas = recientes.map((v) => v.foto);
+    actual = {
+      ...c,
+      horaAuto: selH === "auto",
+      titular: azar(tits.length ? tits : H.titulares),
+      etiqueta: azar(H.etiquetas),
+      foto: elegirSin(F.fotos, fotosUsadas),
+      musica: elegirSin(MUSICA, historial.slice(0, 3).map((v) => v.musica)),
+      bendicion: elegirSin(BENDICIONES, recientes.map((v) => v.bendicion))
+    };
+    $("titular").value = actual.titular;
+    $("etiqueta").value = actual.etiqueta;
+    pintar(true);
+  }
+
+  /* ---------- Boceto de la miniatura ---------- */
+  const lienzoMedida = document.createElement("canvas").getContext("2d");
+  function anchoPalabra(w, fs, luz) {
+    lienzoMedida.font = (luz ? "italic 500 " : "600 ") + fs + 'px "Cormorant Garamond", Georgia, serif';
+    return lienzoMedida.measureText(w).width;
+  }
+  function tokens(titular) {
+    const out = [];
+    const re = /\*([^*]+)\*|(\S+)/g; let m;
+    while ((m = re.exec(titular || ""))) {
+      if (m[1]) m[1].trim().split(/\s+/).forEach((w) => out.push({ w, luz: true }));
+      else out.push({ w: m[2].replace(/\*/g, ""), luz: false });
+    }
+    return out.filter((t) => t.w);
+  }
+  function maquetar(toks, maxW, fsMax) {
+    for (let fs = fsMax; fs >= 52; fs -= 4) {
+      const esp = anchoPalabra(" ", fs, false);
+      const lineas = []; let linea = [], ancho = 0, cabe = true;
+      for (const t of toks) {
+        const a = anchoPalabra(t.w, fs, t.luz);
+        if (a > maxW) { cabe = false; break; }
+        const nuevo = linea.length ? ancho + esp + a : a;
+        if (nuevo > maxW && linea.length) { lineas.push({ toks: linea, ancho }); linea = [t]; ancho = a; }
+        else { linea.push(t); ancho = nuevo; }
+      }
+      if (linea.length) lineas.push({ toks: linea, ancho });
+      if (cabe && lineas.length <= 3) return { fs, lineas };
+    }
+    return { fs: 52, lineas: [{ toks, ancho: maxW }] };
+  }
+
+  function boceto(v, opts) {
+    const anim = opts && opts.anim;
+    const H = HORAS[v.hora] || HORAS.noche;
+    const x = POSICIONES[v.pos] || 640;
+    const uid = "b" + Math.random().toString(36).slice(2, 8);
+    const trazo = anim ? ' class="trazo"' : "";
+    const enc = anim ? ' class="encender"' : "";
+    const hiloAttr = `stroke="${H.hilo}" stroke-width="6" fill="none" stroke-linecap="round" filter="url(#${uid}h)"`;
+    const punto = (cx, cy) => `<g${enc}><circle cx="${cx}" cy="${cy}" r="26" fill="${H.hilo}" opacity=".28"/><circle cx="${cx}" cy="${cy}" r="14" fill="${H.destello}" stroke="${H.hilo}" stroke-width="6"/></g>`;
+    let arte = "", hilo = "", fin = "";
+    const defs = `<filter id="${uid}h" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <radialGradient id="${uid}r"><stop offset="0" stop-color="${H.atm}" stop-opacity=".95"/><stop offset=".5" stop-color="${H.atm}" stop-opacity=".35"/><stop offset="1" stop-color="${H.atm}" stop-opacity="0"/></radialGradient>
+      <radialGradient id="${uid}d"><stop offset="0" stop-color="${H.destello}"/><stop offset=".35" stop-color="${H.hilo}" stop-opacity=".55"/><stop offset="1" stop-color="${H.atm}" stop-opacity="0"/></radialGradient>
+      <linearGradient id="${uid}c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${H.fondo}"/><stop offset="1" stop-color="${H.atm}"/></linearGradient>
+      <linearGradient id="${uid}k" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${H.destello}" stop-opacity=".5"/><stop offset="1" stop-color="${H.atm}" stop-opacity="0"/></linearGradient>`;
+
+    switch (v.familia) {
+      case "manos":
+        arte = `<ellipse cx="${x}" cy="540" rx="560" ry="420" fill="url(#${uid}r)"/><ellipse cx="${x}" cy="540" rx="180" ry="110" fill="url(#${uid}d)" opacity=".7"/>
+          <path d="M${x - 70} 720 C ${x - 64} 640 ${x - 30} 580 ${x} 560 C ${x + 30} 580 ${x + 64} 640 ${x + 70} 720 Z" fill="${H.fondo}" opacity=".75"/>`;
+        hilo = `<line${trazo} x1="${x}" y1="-10" x2="${x}" y2="512" ${hiloAttr}/>`;
+        fin = punto(x, 540); break;
+      case "horizonte": {
+        const desdeIzq = v.pos !== "izquierda";
+        arte = `<rect width="1280" height="520" fill="url(#${uid}c)"/><rect y="520" width="1280" height="200" fill="${H.elev}"/><circle cx="${x}" cy="520" r="220" fill="url(#${uid}d)"/>`;
+        hilo = `<line${trazo} x1="${desdeIzq ? -10 : 1290}" y1="520" x2="${desdeIzq ? x - 22 : x + 22}" y2="520" ${hiloAttr}/>`;
+        fin = punto(x, 520); break; }
+      case "llama":
+        arte = `<ellipse cx="${x}" cy="560" rx="520" ry="440" fill="url(#${uid}r)"/><circle cx="${x}" cy="520" r="120" fill="url(#${uid}d)"/>
+          <rect x="${x - 24}" y="560" width="48" height="170" fill="${H.texto}" opacity=".85"/>
+          <path d="M${x} 492 C ${x - 16} 516 ${x - 14} 548 ${x} 556 C ${x + 14} 548 ${x + 16} 516 ${x} 492 Z" fill="${H.destello}"/>`;
+        hilo = `<path${trazo} d="M${x} 490 C ${x + 6} 380 ${x + 70} 260 ${x + 36} -10" ${hiloAttr}/>`;
+        break;
+      case "cielo": {
+        const ex = v.pos === "izquierda" ? -10 : 1290;
+        arte = `<rect width="1280" height="720" fill="url(#${uid}c)"/><ellipse cx="${ex < 0 ? 200 : 1080}" cy="80" rx="520" ry="300" fill="url(#${uid}r)"/>
+          <rect y="640" width="1280" height="80" fill="${H.elev}"/><rect x="${x - 9}" y="592" width="18" height="50" fill="${H.fondo}"/><circle cx="${x}" cy="582" r="11" fill="${H.fondo}"/>`;
+        hilo = `<line${trazo} x1="${ex}" y1="-10" x2="${x + (ex < 0 ? -14 : 14)}" y2="548" ${hiloAttr}/>`;
+        fin = punto(x, 560); break; }
+      case "ventana": {
+        const wx = v.pos === "izquierda" ? x - 120 : v.pos === "derecha" ? x + 120 : x + 130;
+        arte = `<ellipse cx="${wx}" cy="200" rx="420" ry="360" fill="url(#${uid}r)" opacity=".7"/>
+          <rect x="${wx - 80}" y="50" width="160" height="230" fill="${H.atm}" opacity=".85"/>
+          <rect x="${wx - 4}" y="50" width="8" height="230" fill="${H.fondo}"/><rect x="${wx - 80}" y="160" width="160" height="8" fill="${H.fondo}"/>
+          <polygon points="${wx - 80},280 ${wx + 80},280 ${x + 190},720 ${x - 190},720" fill="url(#${uid}k)"/>`;
+        hilo = `<line${trazo} x1="${wx + 30}" y1="-10" x2="${x + (wx > x ? 8 : -8)}" y2="566" ${hiloAttr}/>`;
+        fin = punto(x, 590); break; }
+      default:
+        arte = `<rect width="1280" height="720" fill="${H.elev}"/><ellipse cx="1120" cy="60" rx="520" ry="320" fill="url(#${uid}r)" opacity=".55"/>`;
+    }
+
+    // Titular
+    const toks = tokens(v.titular);
+    const pal = v.familia === "palabra";
+    let x0, anchor, maxW;
+    if (pal) { x0 = 112; anchor = "start"; maxW = 1000; }
+    else if (v.familia === "horizonte" && v.tv === "arriba" && v.pos !== "izquierda") { x0 = 88; anchor = "start"; maxW = v.pos === "centro" ? 1000 : 1000; }
+    else if (v.lado === "derecha") { x0 = 1192; anchor = "end"; maxW = 1192 - x - 110; }
+    else { x0 = 88; anchor = "start"; maxW = x - 88 - 110; }
+    if (v.familia === "llama" && v.lado === "izquierda") maxW = Math.min(maxW, x - 88 - 60);
+    const { fs, lineas } = maquetar(toks, maxW, pal ? 150 : 124);
+    const lh = Math.round(fs * 0.94);
+    let base1;
+    const etqFs = 26, gap = 20;
+    const etq = (v.etiqueta || "").trim();
+    if (pal) base1 = 360 - ((lineas.length - 1) * lh) / 2;
+    else if (v.tv === "abajo") base1 = 720 - 76 - (lineas.length - 1) * lh;
+    else base1 = 72 + (etq ? etqFs + gap : 0) + fs * 0.78;
+    let texto = "";
+    if (etq && !pal) texto += `<text x="${x0}" y="${Math.round(base1 - fs * 0.78 - gap)}" text-anchor="${anchor}" font-family="Mulish, system-ui, sans-serif" font-weight="800" font-size="${etqFs}" letter-spacing="4.6" fill="${H.suave}">${esc(etq.toUpperCase())}</text>`;
+    lineas.forEach((ln, i) => {
+      const spans = ln.toks.map((t) => t.luz
+        ? `<tspan font-style="italic" font-weight="500" fill="${H.hilo}">${esc(t.w)}</tspan>`
+        : `<tspan>${esc(t.w)}</tspan>`).join(" ");
+      texto += `<text x="${x0}" y="${Math.round(base1 + i * lh)}" text-anchor="${anchor}" font-family="'Cormorant Garamond', Georgia, serif" font-weight="600" font-size="${fs}" letter-spacing="${-fs * 0.01}" fill="${H.texto}">${spans}</text>`;
+    });
+    if (pal) {
+      const ultima = lineas[lineas.length - 1];
+      const y = Math.round(base1 + (lineas.length - 1) * lh + 46);
+      const xEnd = Math.round(x0 + (ultima ? ultima.ancho : 400) + 24);
+      hilo = `<line${trazo} x1="-10" y1="${y}" x2="${xEnd}" y2="${y}" ${hiloAttr}/>`;
+      fin = punto(xEnd + 30, y);
+      if (etq) texto += `<text x="${x0}" y="648" font-family="Mulish, system-ui, sans-serif" font-weight="800" font-size="${etqFs}" letter-spacing="4.6" fill="${H.suave}">${esc(etq.toUpperCase())}</text>`;
+    }
+    const dur = `<rect x="1170" y="672" width="94" height="36" rx="5" fill="#000" opacity=".8"/><text x="1217" y="698" text-anchor="middle" font-family="Mulish, system-ui, sans-serif" font-weight="700" font-size="22" fill="#fff">12:00</text>`;
+    return `<defs>${defs}</defs><rect width="1280" height="720" fill="${H.fondo}"/>${arte}${hilo}${fin}${texto}${dur}`;
+  }
+  function svgCompleto(v, etiquetaAria) {
+    return `<svg viewBox="0 0 1280 720" role="img" aria-label="${esc(etiquetaAria)}">${boceto(v)}</svg>`;
+  }
+
+  /* ---------- Revisión de reglas ---------- */
+  function revisar(v) {
+    const r = [];
+    const h0 = historial[0];
+    const H = HORAS[v.hora], F = FAMILIAS[v.familia];
+    if (!h0) {
+      r.push(["nota", "Aún no hay videos en el historial. Al guardar el primero, el taller empezará a comparar."]);
+    } else {
+      if (v.hora === h0.hora && v.familia === h0.familia) r.push(["aviso", `Repite ${H.nombre} + ${F.nombre}, igual que «${h0.titulo || "el último video"}». Cambia la Hora o la composición.`]);
+      else r.push(["bien", `Hora y composición distintas del último video (${HORAS[h0.hora].nombre} + ${FAMILIAS[h0.familia].nombre}).`]);
+      const mismaPos = v.pos === h0.pos, mismaDir = v.dir === h0.dir;
+      if (mismaPos || mismaDir) {
+        const que = [mismaPos ? "la misma posición" : "", mismaDir ? `la misma dirección (${v.dir})` : ""].filter(Boolean).join(" y ");
+        r.push(["aviso", `El hilo repite ${que} que en el último video. Pide otra propuesta o cambia la composición.`]);
+      } else r.push(["bien", "El hilo cambia de posición y de dirección respecto al último video."]);
+    }
+    const luz = palabraLuz(v.titular);
+    const nLuz = ((v.titular || "").match(/\*[^*]+\*/g) || []).length;
+    const palabras = tokens(v.titular).length;
+    if (nLuz !== 1) r.push(["aviso", "Marca una sola palabra-luz con asteriscos, por ejemplo: Duerme en *paz*."]);
+    else if (historial.slice(0, 6).some((x) => palabraLuz(x.titular) === luz)) r.push(["aviso", `La palabra-luz «${luz}» ya salió en tus últimos 6 videos.`]);
+    else r.push(["bien", `Palabra-luz «${luz}» nueva entre tus últimos 6 videos.`]);
+    if (palabras < 2 || palabras > 4) r.push(["aviso", `El titular tiene ${palabras} palabras. Déjalo entre 2 y 4.`]);
+    if (v.familia !== "palabra") r.push(["nota", "Haz o genera la foto solo para este video. Nunca reutilices un fondo."]);
+    return r;
+  }
+
+  /* ---------- Pintar ---------- */
+  function pintar(anim) {
+    if (!actual) return;
+    actual.titular = $("titular").value;
+    actual.etiqueta = $("etiqueta").value;
+    const v = actual, H = HORAS[v.hora], F = FAMILIAS[v.familia];
+    $("boceto").innerHTML = boceto(v, { anim });
+    $("boceto").setAttribute("aria-label", `Boceto: ${H.nombre}, ${F.nombre}, titular ${v.titular.replace(/\*/g, "")}`);
+
+    const detect = detectarHora($("tema").value);
+    $("tema-ayuda").textContent = $("sel-hora").value !== "auto" ? `Hora fijada a mano: ${H.nombre}.`
+      : detect ? `Por el tema, la Hora es ${HORAS[detect].nombre}.` : "Sin tema reconocible: el taller alterna la Hora.";
+
+    const foto = v.familia === "palabra" ? "Sin foto: solo tipografía sobre el fondo de la Hora." : `${cap(v.foto)}, ${H.luz}.`;
+    const tercio = { izquierda: "el tercio izquierdo", centro: "el centro", derecha: "el tercio derecho" }[v.pos];
+    const lugar = v.familia === "palabra" ? "bajo el titular" : `en ${tercio}`;
+    const borde = { manos: "el borde superior", horizonte: v.pos === "izquierda" ? "el borde derecho" : "el borde izquierdo", llama: "la llama", cielo: v.pos === "izquierda" ? "la esquina superior izquierda" : "la esquina superior derecha", ventana: "el borde superior, a través de la ventana", palabra: "el borde izquierdo" }[v.familia];
+    $("ficha").innerHTML = `
+      <dt>Hora</dt><dd><span class="punto-hora" style="background:${H.fondo};box-shadow:inset -5px 0 0 ${H.atm}"></span><strong>${H.nombre}</strong><span class="sub">${esc(cap(H.para))}</span></dd>
+      <dt>Composición</dt><dd><strong>${F.nombre}</strong><span class="sub">${esc(foto)}</span></dd>
+      <dt>Hilo de Luz</dt><dd><strong>${esc(F.ruta)}</strong><span class="sub">${v.familia === "llama" ? `La vela va en ${tercio}; el hilo sale por arriba` : `Entra desde ${borde} y termina ${lugar}`}. Titular a la ${v.lado}, ${v.tv === "arriba" ? "arriba" : "abajo"}.</span></dd>
+      <dt>Apertura</dt><dd>Plano de ${esc(v.familia === "palabra" ? "fondo liso de la Hora" : v.foto)}. El hilo se dibuja en 2 s desde ${borde}; la campana suena cuando se enciende el punto.</dd>
+      <dt>Música</dt><dd>${esc(v.musica)}<span class="sub">Solo la campana se repite entre videos.</span></dd>
+      <dt>Cierre</dt><dd>El hilo termina en el sello. «${esc(v.bendicion)}»</dd>`;
+
+    const reglas = revisar(v);
+    $("reglas").innerHTML = reglas.map(([k, t]) => `<li class="${k === "bien" ? "" : k}">${esc(t)}</li>`).join("");
+    pintarPrueba();
+  }
+  const cap = (s) => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+
+  function pintarPrueba() {
+    const ult = historial.slice(0, 6);
+    let html = actual ? `<figure class="nueva">${svgCompleto(actual, "Tu propuesta")}<figcaption>Tu propuesta · ${HORAS[actual.hora].nombre} · ${FAMILIAS[actual.familia].nombre}</figcaption></figure>` : "";
+    ult.forEach((v) => { html += `<figure>${svgCompleto(v, v.titulo || "Video anterior")}<figcaption>${esc(v.titulo || "Sin título")} · ${HORAS[v.hora].nombre} · ${FAMILIAS[v.familia].nombre}</figcaption></figure>`; });
+    for (let i = ult.length; i < 3; i++) html += `<div class="hueco">Aquí aparecerá un video que guardes en el historial</div>`;
+    $("prueba").innerHTML = html;
+  }
+
+  function pintarHistorial(msg) {
+    const el = $("historial");
+    if (msg) { el.innerHTML = `<div class="vacio">${msg}</div>`; return; }
+    if (!historial.length) {
+      el.innerHTML = `<div class="vacio"><strong>Todavía no hay videos guardados.</strong><br>Cuando termines una propuesta, escribe el título y pulsa «Guardar en el historial». El taller usará tus últimos videos para no repetir Hora, composición, hilo ni palabra-luz.</div>`;
+      return;
+    }
+    el.innerHTML = `<div class="historial">${historial.map((v) => {
+      const f = v.creado ? new Date(v.creado).toLocaleDateString("es", { day: "numeric", month: "short", year: "numeric" }) : "";
+      return `<div class="fila" data-id="${esc(v.id)}">${svgCompleto(v, v.titulo || "Video")}
+        <div><div class="t">${esc(v.titulo || v.titular.replace(/\*/g, ""))}</div>
+        <div class="m">${esc(f)} · ${HORAS[v.hora].nombre} · ${FAMILIAS[v.familia].nombre} · hilo ${esc(v.dir)}${v.pos !== "texto" ? " " + esc(v.pos) : ""} · palabra-luz «${esc(palabraLuz(v.titular))}»</div></div>
+        <div class="quitar">${puedeEscribir ? `<button type="button" class="chico" data-quitar="${esc(v.id)}">Quitar</button>` : ""}</div></div>`;
+    }).join("")}</div>`;
+  }
+
+  function aviso(t) {
+    const el = $("toast"); el.textContent = t; el.hidden = false;
+    clearTimeout(aviso._t); aviso._t = setTimeout(() => { el.hidden = true; }, 2600);
+  }
+
+  /* ---------- Controles ---------- */
+  $("sel-hora").innerHTML = `<option value="auto">Según el tema</option>` + ORDEN_HORAS.map((h) => `<option value="${h}">${HORAS[h].nombre}</option>`).join("");
+  $("sel-familia").innerHTML = `<option value="auto">La que toque</option>` + ORDEN_FAMILIAS.map((f) => `<option value="${f}">${FAMILIAS[f].nombre}</option>`).join("");
+
+  let temaT;
+  $("tema").addEventListener("input", () => { clearTimeout(temaT); temaT = setTimeout(() => {
+    const d = $("sel-hora").value === "auto" ? detectarHora($("tema").value) : null;
+    if (d && actual && d !== actual.hora) proponer(); else pintar(false);
+  }, 450); });
+  $("sel-hora").addEventListener("change", () => proponer());
+  $("sel-familia").addEventListener("change", () => proponer());
+  $("otra").addEventListener("click", () => proponer(actual));
+  $("titular").addEventListener("input", () => pintar(false));
+  $("etiqueta").addEventListener("input", () => pintar(false));
+
+  $("copiar").addEventListener("click", () => {
+    if (!actual) return;
+    const t = $("ficha").innerText.replace(/\n{2,}/g, "\n");
+    const texto = `${$("titulo").value ? $("titulo").value + "\n" : ""}Titular: ${actual.titular.replace(/\*/g, "")} (palabra-luz: ${palabraLuz(actual.titular)})\n${actual.etiqueta ? "Etiqueta: " + actual.etiqueta + "\n" : ""}${t}`;
+    try {
+      navigator.clipboard.writeText(texto).then(() => aviso("Ficha copiada"), () => aviso("No se pudo copiar. Selecciona la ficha a mano."));
+    } catch (e) { aviso("No se pudo copiar. Selecciona la ficha a mano."); }
+  });
+
+  $("historial").addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b || !db) return;
+    const id = b.dataset.quitar || b.dataset.si || b.dataset.no;
+    const caja = b.closest(".quitar");
+    if (b.dataset.quitar) { caja.innerHTML = `¿Quitar del historial? <button type="button" class="chico" data-si="${esc(id)}">Sí, quitar</button><button type="button" class="chico" data-no="${esc(id)}">No</button>`; return; }
+    if (b.dataset.no) { caja.innerHTML = `<button type="button" class="chico" data-quitar="${esc(id)}">Quitar</button>`; return; }
+    if (b.dataset.si) {
+      try { await db.doc("videos/" + id).delete(); aviso("Quitado del historial"); }
+      catch (err) { aviso("No se pudo quitar. Inténtalo de nuevo."); }
+    }
+  });
+
+  $("guardar").addEventListener("click", async () => {
+    if (!actual || !db) return;
+    const titulo = $("titulo").value.trim();
+    if (!titulo) { $("estado-guardar").textContent = "Escribe el título del video para guardarlo."; $("titulo").focus(); return; }
+    $("guardar").disabled = true;
+    const v = actual;
+    try {
+      await db.collection("videos").add({
+        titulo, tema: $("tema").value.trim(), hora: v.hora, familia: v.familia, pos: v.pos, tv: v.tv, lado: v.lado, dir: v.dir,
+        titular: $("titular").value, etiqueta: $("etiqueta").value, foto: v.foto, musica: v.musica, bendicion: v.bendicion, creado: Date.now()
+      });
+      aviso("Guardado en el historial");
+      $("estado-guardar").textContent = "";
+      $("titulo").value = ""; $("tema").value = "";
+      $("sel-hora").value = "auto"; $("sel-familia").value = "auto";
+    } catch (err) {
+      $("estado-guardar").textContent = err && err.code === "quota_exceeded" ? "El historial está lleno. Quita videos antiguos para guardar nuevos." : "No se pudo guardar. Revisa tu conexión e inténtalo de nuevo.";
+    } finally { $("guardar").disabled = false; }
+  });
+
+  /* ---------- Arranque ---------- */
+  function arrancar() { proponer(); }
+  $("guardar").disabled = true;
+  $("estado-guardar").textContent = "Conectando con tu historial…";
+  pintarHistorial("Cargando tu historial…");
+  (document.fonts && document.fonts.load ? Promise.all([
+    document.fonts.load('600 100px "Cormorant Garamond"'), document.fonts.load('italic 500 100px "Cormorant Garamond"')
+  ]).catch(() => {}) : Promise.resolve()).then(arrancar);
+
+  (async () => {
+    const c = window.claude;
+    db = c && c.use ? await c.use("db").catch(() => null) : null;
+    const user = c && c.use ? await c.use("user").catch(() => null) : null;
+    puedeEscribir = !!(user && user.canEdit ? await Promise.resolve(user.canEdit()).catch(() => false) : false);
+    if (!db) {
+      $("estado-guardar").textContent = "El historial no está disponible en esta vista. Puedes usar el taller, pero no guardar.";
+      pintarHistorial("El historial no está disponible en esta vista.");
+      return;
+    }
+    $("guardar").disabled = !puedeEscribir;
+    $("estado-guardar").textContent = puedeEscribir ? "" : "Solo quien puede editar este taller guarda videos en el historial.";
+    db.collection("videos").orderBy("creado", "desc").limit(60).onSnapshot((snap) => {
+      historial = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+        .filter((v) => HORAS[v.hora] && FAMILIAS[v.familia]);
+      pintarHistorial();
+      if (actual) pintar(false);
+    }, () => pintarHistorial("Se perdió la conexión con el historial. Recarga la página."));
+  })();
+})();
+</script>
