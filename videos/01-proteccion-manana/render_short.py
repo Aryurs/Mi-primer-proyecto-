@@ -341,15 +341,22 @@ if __name__ == "__main__":
             cuadro(int(s * FPS)).save(os.path.join(TRABAJO, f"m-{s:06.1f}.jpg"), quality=88)
         for b in BLOQUES[:12]: print(round(b["t0"], 2), round(b["t1"], 2), " ".join(b["ws"]), "| clave:", b["clave"])
         sys.exit(0)
+    # Portada al inicio (--portada imagen.jpg [--portada-seg 0.5]): unos cuadros fijos antes del video,
+    # para poder elegirla como portada desde la app de YouTube del teléfono. Voz y música empiezan después.
+    PORTADA = sys.argv[sys.argv.index("--portada") + 1] if "--portada" in sys.argv else None
+    PRE = float(sys.argv[sys.argv.index("--portada-seg") + 1]) if "--portada-seg" in sys.argv else (0.5 if PORTADA else 0.0)
     audio = os.path.join(TRABAJO, "audio.m4a")
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", VOZ, "-i", MUSICA, "-filter_complex",
         f"[0:a]apad=whole_dur={DURACION}[v];[1:a]atrim=0:{DURACION},asetpts=PTS-STARTPTS,volume=-21dB,afade=t=in:d=2,"
         f"afade=t=out:st={DURACION-3}:d=3,aformat=channel_layouts=mono[m];"
-        f"[v][m]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]",
+        f"[v][m]amix=inputs=2:duration=first:normalize=0,adelay={int(PRE*1000)}:all=1,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]",
         "-map", "[a]", "-c:a", "aac", "-b:a", "192k", audio], check=True)
     enc = subprocess.Popen(["ffmpeg", "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}",
         "-r", str(FPS), "-i", "-", "-i", audio, "-map", "0:v", "-map", "1:a", "-c:v", "libx264", "-preset", "medium",
         "-crf", "19", "-pix_fmt", "yuv420p", "-c:a", "copy", "-shortest", "-movflags", "+faststart", SALIDA], stdin=subprocess.PIPE)
+    if PORTADA:
+        portada = Image.open(PORTADA).convert("RGB").resize((W, H), Image.LANCZOS).tobytes()
+        for _ in range(int(round(PRE * FPS))): enc.stdin.write(portada)
     for n in range(int(DURACION * FPS)):
         enc.stdin.write(cuadro(n).tobytes())
         if n % (FPS * 10) == 0: print(f"{n / FPS:5.0f} s / {DURACION:.0f} s", flush=True)

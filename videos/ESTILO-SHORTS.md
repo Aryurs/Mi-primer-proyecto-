@@ -7,6 +7,13 @@ Elegido el 19 de noviembre de 2026, a partir de los Shorts anteriores del canal.
 - Voz completa de principio a fin. Música de fondo a volumen medio: unos 14 dB por debajo de la voz.
 - Sin campana, sin líneas doradas, sin sello ni marca de agua.
 
+## Portada (primer cuadro)
+- Cada video lleva su portada vertical (1080×1920) como primer cuadro, durante 0,5 s.
+- Sirve para elegirla como portada desde la app de YouTube en el teléfono: al editar la portada,
+  arrastra el selector hasta el inicio del video. La voz y la música empiezan justo después.
+- Estilo de la portada: foto con mucho cielo, «ORACIÓN DE…» pequeño en dorado y el tema grande
+  (una palabra en dorado, el resto en blanco), en la parte de arriba y al centro.
+
 ## Inicio
 - Título centrado sobre la primera foto mientras la voz dice la introducción:
   «ORACIÓN PARA» pequeño en dorado y debajo el tema en 3 o 4 líneas, con 1 o 2 palabras en dorado.
