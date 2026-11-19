@@ -20,6 +20,27 @@ for (cx,cy,ax,ay) in [(890,655,120,45),(672,702,120,52),(1035,600,65,28),(1152,5
 river = ss(440, 540, yy + 0.08*(xx-700))             # lower band, slightly tilted
 free = (1-cat)
 
+# --- arm cut-outs: each arm becomes a solid sprite rotated about its shoulder ---
+POLY_L = np.array([(722,278),(738,288),(748,302),(770,314),(790,317),(805,308),(820,298),(826,340),(814,364),
+                   (790,370),(772,362),(752,345),(732,331),(707,323),(690,317),(679,305),(683,292),(700,287),(710,281)], np.int32)
+POLY_R = np.array([(930,296),(960,311),(1000,319),(1020,312),(1035,301),(1055,289),(1072,285),(1081,292),(1096,304),
+                   (1105,318),(1099,328),(1080,332),(1060,331),(1048,340),(1020,354),(993,366),(970,378),(942,384),(926,350)], np.int32)
+PIV_L, PIV_R = (812, 336), (940, 336)
+def arm_sprite(poly, piv, side):
+    m = np.zeros((H, W), np.uint8); cv2.fillPoly(m, [poly], 255)
+    a = cv2.GaussianBlur(m.astype(np.float32)/255, (0,0), 1.3)
+    # blend softly into the body near the shoulder so no seam shows
+    d = side*(piv[0]-xx)
+    a *= ss(-14, 22, d)
+    return m, a
+mL, aL = arm_sprite(POLY_L, PIV_L, +1)
+mR, aR = arm_sprite(POLY_R, PIV_R, -1)
+hole = cv2.dilate(np.maximum(mL, mR), np.ones((19,19), np.uint8))
+hole[:, 800:955] = 0                                   # keep the body/shoulders themselves
+src_img = src.astype(np.uint8)
+base_src = cv2.inpaint(src_img, hole, 15, cv2.INPAINT_TELEA).astype(np.float32)
+base_src = np.where(hole[...,None] > 0, cv2.GaussianBlur(base_src, (0,0), 3), base_src)
+
 def rot_field(px, py, ang, w):
     dx, dy = xx-px, yy-py
     c, s = np.cos(ang), np.sin(ang)
@@ -79,16 +100,20 @@ for f in range(N):
     dx += cat*sway
     dy += cat*bob
     # arms: graceful raise/lower (rotation about shoulders), mirrored
-    ang = np.deg2rad(18)*np.sin(a2 + 0.6)
-    lx, ly = rot_field(800, 338+bob, ang, wL); dx += lx; dy += ly
-    rx, ry = rot_field(945, 330+bob, -ang, wR); dx += rx; dy += ry
+    ang = np.deg2rad(16)*np.sin(a2 + 0.6)
     hx_, hy_ = rot_field(870, 330+bob, np.deg2rad(4)*np.sin(a2 + 1.8), wH); dx += hx_; dy += hy_
     # tail sway, lagging behind the arms
     tx, ty = rot_field(990, 490+bob, np.deg2rad(13)*np.sin(a2 - 1.2), wT); dx += tx; dy += ty
     # twinkle (applied before warping so it travels with the stars)
     tw = np.sin(speed*th + phase)
-    base = src + (star*hi_w*np.where(tw>0, 2.2*tw, 0.9*tw))[...,None]
-    frame = np.clip(cv2.remap(base, xx-dx, yy-dy, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT), 0, 255)
+    base = base_src + (star*hi_w*np.where(tw>0, 2.2*tw, 0.9*tw))[...,None]
+    frame = np.clip(cv2.remap(base, xx-dx, yy-dy, cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT), 0, 255)
+    for (piv, al, sgn) in ((PIV_L, aL, +1), (PIV_R, aR, -1)):
+        M = cv2.getRotationMatrix2D(piv, -np.degrees(sgn*ang), 1.0)   # both hands rise when ang > 0
+        M[0,2] += sway; M[1,2] += bob
+        spr = cv2.warpAffine(src, M, (W,H), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
+        alw = cv2.warpAffine(al, M, (W,H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)[...,None]
+        frame = frame*(1-alw) + np.clip(spr,0,255)*alw
     # river shimmer: soft light bands travelling along stream
     band = (0.5+0.5*np.sin(xx/60 - yy/140 - 3*th))**6
     frame += (band*river*free*0.10)[...,None]*frame
