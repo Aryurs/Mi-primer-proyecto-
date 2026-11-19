@@ -105,7 +105,7 @@ FOTO = {
  "sol":     ("98e1cf53", 0.58, None), "cielo": ("207c3c03", 0.50, None), "familia": ("b183e2de", 0.60, None),
  "mano":    ("24f91141", 0.62, None), "brazos": ("8e7c0384", 0.50, None), "cruz": ("e1596043", 0.52, None),
 }
-BW, BH = 2112, 1188   # base 1.1x para el zoom lento
+BW, BH = 2400, 1350   # base 1.25x: deja margen para acercar, alejar y desplazar
 
 def preparar(clave):
     ruta = os.path.join(TRABAJO, clave + ".jpg")
@@ -216,20 +216,73 @@ def base(clave):
         CACHE[clave] = CIERRE if clave == "cierre" else preparar(clave)
     return CACHE[clave]
 
+# Movimiento de cada plano: acercar, alejar o desplazar, alternando para que ninguno se repita
+MOVIMIENTOS = [("acercar", 0, 0), ("alejar", 1, 0), ("desplazar", 1, 0), ("acercar", -1, 1), ("alejar", 0, -1),
+               ("desplazar", -1, 0), ("acercar", 1, -1), ("alejar", -1, 1)]
+
 def cuadro_plano(idx, t):
     clave, t0, t1 = planos[idx]
     if clave == "cierre": return CIERRE.copy()
     im = base(clave); p = min(1, max(0, (t - t0) / max(0.1, t1 - t0)))
     p = 0.5 - 0.5 * math.cos(math.pi * p)
-    z = 1.0 + 0.035 * (p if idx % 2 == 0 else 1 - p)
-    bw, bh = BW / (1.1 * z) * 1.0, BH / (1.1 * z)
-    deriva = (p - 0.5) * 0.012 * BW * (1 if idx % 3 else -1)
-    cx, cy = BW / 2 + deriva, BH / 2
+    tipo, dx, dy = MOVIMIENTOS[idx % len(MOVIMIENTOS)]
+    if clave == "prado": tipo = "acercar"
+    if tipo == "acercar":   z = 1.0 + 0.10 * p
+    elif tipo == "alejar":  z = 1.10 - 0.10 * p
+    else:                   z = 1.08
+    bw, bh = BW / (1.25 * z), BH / (1.25 * z)
+    libre_x, libre_y = (BW - bw) / 2, (BH - bh) / 2
+    if tipo == "desplazar": cx = BW / 2 + libre_x * 0.85 * (p - 0.5) * 2 * (dx or 1)
+    else:                   cx = BW / 2 + libre_x * 0.5 * (p - 0.5) * 2 * dx
+    cy = BH / 2 + libre_y * 0.5 * (p - 0.5) * 2 * dy
     if clave == "prado":      # el zoom se ancla en el sol para que el punto de luz no se mueva
-        e = (BW / 1.1) / W; ax = (BW - BW / 1.1) / 2 + SOL_APERTURA[0] * e; ay = (BH - BH / 1.1) / 2 + SOL_APERTURA[1] * e
+        e = (BW / 1.25) / W; ax = (BW - BW / 1.25) / 2 + SOL_APERTURA[0] * e; ay = (BH - BH / 1.25) / 2 + SOL_APERTURA[1] * e
         k = bw / W; x0, y0 = ax - SOL_APERTURA[0] * k, ay - SOL_APERTURA[1] * k
         return im.resize((W, H), Image.BICUBIC, box=(x0, y0, x0 + bw, y0 + bh))
-    return im.resize((W, H), Image.BICUBIC, box=(cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2))
+    out = im.resize((W, H), Image.BICUBIC, box=(cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2))
+    if clave == "lago": out = agua(out, t, (BH / 2 + 0.0667 * 1.25 * H - (cy - bh / 2)) / bh * H)
+    return out
+
+def agua(im, t, horizonte):
+    """Ondula el agua bajo el horizonte: vaivén horizontal y brillos que corren."""
+    a = np.asarray(im); y0 = int(max(0, min(H - 2, horizonte + 8)))
+    ys = np.arange(y0, H); prof = (ys - y0) / max(1, H - y0)
+    amp = 1.2 + 7.0 * prof
+    shift = amp * np.sin(ys * 0.085 - t * 2.1) + 0.5 * amp * np.sin(ys * 0.027 + t * 1.2)
+    xs = (np.arange(W)[None, :] + shift[:, None]).round().astype(np.int32).clip(0, W - 1)
+    agua_ = a[ys[:, None], xs].astype(np.float32)
+    brillo = 1 + (0.035 + 0.05 * prof)[:, None] * np.sin(ys[:, None] * 0.21 - t * 3.0 + np.arange(W)[None, :] * 0.004)
+    agua_ = (agua_ * brillo[..., None]).clip(0, 255).astype(np.uint8)
+    b = a.copy(); b[y0:] = agua_
+    return Image.fromarray(b)
+
+# Polvo dorado: partículas que suben despacio, se mecen y titilan
+_rng = np.random.default_rng(7)
+N_POLVO = 95
+POLVO = {"x": _rng.uniform(0, W, N_POLVO), "y": _rng.uniform(0, H, N_POLVO), "v": _rng.uniform(10, 32, N_POLVO),
+         "am": _rng.uniform(8, 34, N_POLVO), "f": _rng.uniform(0.08, 0.25, N_POLVO), "fase": _rng.uniform(0, 6.28, N_POLVO),
+         "r": _rng.choice([2.5, 3.5, 4.5, 6, 8, 11], N_POLVO, p=[.24, .24, .2, .16, .1, .06]), "a": _rng.uniform(0.5, 1.0, N_POLVO)}
+def _mota(r):
+    n = int(r * 4) | 1; c = n // 2; yy, xx = np.mgrid[0:n, 0:n]
+    d = np.sqrt((xx - c) ** 2 + (yy - c) ** 2)
+    return np.clip(np.exp(-(d / (r * 0.9)) ** 2) * 1.0 + np.exp(-(d / (r * 0.35)) ** 2) * 0.6, 0, 1)
+MOTAS = {r: _mota(r) for r in set(POLVO["r"].tolist())}
+ORO_POLVO = np.array([255, 214, 140], np.float32)
+
+def polvo(im, t, intensidad=1.0):
+    A = np.zeros((H, W), np.float32)
+    for i in range(N_POLVO):
+        y = (POLVO["y"][i] - POLVO["v"][i] * t) % (H + 40) - 20
+        x = (POLVO["x"][i] + POLVO["am"][i] * math.sin(t * POLVO["f"][i] * 6.28 + POLVO["fase"][i])) % W
+        tit = 0.55 + 0.45 * math.sin(t * (0.7 + POLVO["f"][i] * 4) + POLVO["fase"][i] * 3)
+        m = MOTAS[POLVO["r"][i]]; n = m.shape[0]; x0, y0 = int(x) - n // 2, int(y) - n // 2
+        xa, ya, xb, yb = max(0, x0), max(0, y0), min(W, x0 + n), min(H, y0 + n)
+        if xb <= xa or yb <= ya: continue
+        A[ya:yb, xa:xb] += m[ya - y0:yb - y0, xa - x0:xb - x0] * POLVO["a"][i] * tit * intensidad
+    A = np.clip(A, 0, 1)[..., None]
+    a = np.asarray(im.convert("RGB")).astype(np.float32)
+    a = a * (1 - A) + ORO_POLVO * A          # se mezcla como luz sobre la foto
+    return Image.fromarray(a.astype(np.uint8)).convert("RGBA")
 
 def suave(t, a, b):
     if b <= a: return 1.0 if t >= b else 0.0
@@ -246,6 +299,7 @@ def cuadro(n):
     if len(activos) > 1:
         j = activos[0]; k = suave(t, planos[i][1], planos[j][2])
         im = Image.blend(cuadro_plano(j, t).convert("RGBA"), im, k)
+    im = polvo(im, t, 0.6 if t >= T_CIERRE else 1.0)
     capa = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     # Firma de apertura: el hilo baja hasta el sol y se enciende con la campana
     if t < planos[1][1] + CRUCE:
