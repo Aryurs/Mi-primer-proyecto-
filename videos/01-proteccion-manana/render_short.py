@@ -218,6 +218,7 @@ def capa_bloque(b):
     while d0.textlength(" ".join(ws), font=f) > 960 and px > 50: px -= 4; f = F("Poppins-ExtraBold.ttf", px)
     return capa_texto([linea], px, H * .55)
 
+FACEBOOK = "--facebook" in sys.argv
 PROGRESIVO = "--bloques" not in sys.argv     # estilo fijo: palabra por palabra (usa --bloques para el estilo anterior)
 
 def sprites_bloque(b):
@@ -260,9 +261,11 @@ def tarjeta_final():
     capa.alpha_composite(capa_texto([[("¿TE", False), ("BENDIJO", False), ("ESTA", False), ("ORACIÓN?", False)]], 50, 1000))
     botones = []
     b1 = Image.new("RGBA", (580, 128), (0, 0, 0, 0)); d = ImageDraw.Draw(b1)
-    d.rounded_rectangle([0, 0, 579, 127], radius=26, fill=(232, 52, 28), outline=BLANCO, width=5)
-    f = F("Poppins-ExtraBold.ttf", 62); tw = d.textlength("SUSCRÍBETE", font=f)
-    d.text(((580 - tw) / 2, 20), "SUSCRÍBETE", font=f, fill=BLANCO); botones.append((b1, 1085))
+    # YouTube: «SUSCRÍBETE» en rojo · Facebook (--facebook): «SÍGUEME» en azul
+    etiqueta, color = ("SÍGUEME", (24, 119, 242)) if FACEBOOK else ("SUSCRÍBETE", (232, 52, 28))
+    d.rounded_rectangle([0, 0, 579, 127], radius=26, fill=color, outline=BLANCO, width=5)
+    f = F("Poppins-ExtraBold.ttf", 62); tw = d.textlength(etiqueta, font=f)
+    d.text(((580 - tw) / 2, 20), etiqueta, font=f, fill=BLANCO); botones.append((b1, 1085))
     b2 = Image.new("RGBA", (430, 104), (0, 0, 0, 0)); d = ImageDraw.Draw(b2)
     d.rounded_rectangle([0, 0, 429, 103], radius=24, fill=BLANCO, outline=DORADO, width=5)
     pulgar = emoji("👍", 56).getchannel("A"); negro = Image.new("RGBA", pulgar.size, (20, 20, 20, 0)); negro.putalpha(pulgar)
