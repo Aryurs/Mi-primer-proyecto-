@@ -100,7 +100,7 @@ def bloques():
             corte = (len(grupo) >= 3 or largo >= 15 or re.search(r"[,.;:!?»]$", w["w"])
                      or sig is None or sig["tramo"] != w["tramo"])
             if corte:
-                out.append({"ws": [x["w"] for x in grupo], "t0": grupo[0]["t0"], "t1": grupo[-1]["t1"] + 0.15, "frase": i})
+                out.append({"ws": [x["w"] for x in grupo], "tw": [x["t0"] for x in grupo], "t0": grupo[0]["t0"], "t1": grupo[-1]["t1"] + 0.15, "frase": i})
                 grupo = []
     for b in out: b["clave"] = clave(b["ws"])
     return out
@@ -218,6 +218,27 @@ def capa_bloque(b):
     while d0.textlength(" ".join(ws), font=f) > 960 and px > 50: px -= 4; f = F("Poppins-ExtraBold.ttf", px)
     return capa_texto([linea], px, H * .55)
 
+PROGRESIVO = "--progresivo" in sys.argv
+
+def sprites_bloque(b):
+    """Una imagen pequeña por palabra, ya colocada donde va en la línea completa."""
+    ws = [w.upper() for w in b["ws"]]; px = 74
+    f = F("Poppins-ExtraBold.ttf", px); d0 = ImageDraw.Draw(Image.new("RGBA", (1, 1)))
+    while d0.textlength(" ".join(ws), font=f) > 960 and px > 50: px -= 4; f = F("Poppins-ExtraBold.ttf", px)
+    esp = d0.textlength(" ", font=f); total = sum(d0.textlength(w, font=f) for w in ws) + esp * (len(ws) - 1)
+    x = (W - total) / 2; y = H * .55 - px * 1.12 / 2; out = []
+    for k, w in enumerate(ws):
+        tw = d0.textlength(w, font=f); m = 24
+        txt = Image.new("RGBA", (int(tw) + 2 * m, int(px * 1.5) + 2 * m), (0, 0, 0, 0))
+        ImageDraw.Draw(txt).text((m, m), w, font=f, fill=(DORADO if k == b["clave"] else BLANCO) + (255,))
+        a = txt.getchannel("A")
+        sp = Image.new("RGBA", txt.size, (0, 0, 0, 0))
+        sombra = Image.new("RGBA", txt.size, (0, 0, 0, 0)); sombra.putalpha(a.filter(ImageFilter.GaussianBlur(7)).point(lambda v: int(v * .85)))
+        borde = Image.new("RGBA", txt.size, (20, 20, 30, 0)); borde.putalpha(a.filter(ImageFilter.MaxFilter(5)).point(lambda v: int(v * .55)))
+        sp.alpha_composite(sombra, (0, 5)); sp.alpha_composite(borde); sp.alpha_composite(txt)
+        out.append((sp, int(x - m), int(y - m), b["tw"][k])); x += tw + esp
+    return out
+
 TITULO = Image.new("RGBA", (W, H), (0, 0, 0, 0))
 TITULO.alpha_composite(capa_texto([[("ORACIÓN", True), ("PARA", True)]], 40, H * .37))
 TITULO.alpha_composite(capa_texto([[("PROTECCIÓN", True), ("Y", False)], [("COBERTURA", True)],
@@ -274,6 +295,19 @@ def cuadro(n):
     # Subtítulos
     for k, b in enumerate(BLOQUES):
         if b["frase"] == 1 or not (b["t0"] <= t < b["t1"]): continue
+        if PROGRESIVO:          # palabra por palabra, al ritmo de la voz
+            if k not in CAPAS:
+                if len(CAPAS) > 6: CAPAS.clear()
+                CAPAS[k] = sprites_bloque(b)
+            for sp, x, y, tw in CAPAS[k]:
+                e = suave(t, tw, tw + .14)
+                if e <= 0: continue
+                if e < 1:
+                    s_ = .75 + .25 * e; r = sp.resize((max(1, int(sp.width * s_)), max(1, int(sp.height * s_))), Image.BILINEAR)
+                    im.alpha_composite(con_alfa(r, e), (x + (sp.width - r.width) // 2, y + (sp.height - r.height) // 2))
+                else:
+                    im.alpha_composite(sp, (x, y))
+            continue
         if k not in CAPAS:
             if len(CAPAS) > 6: CAPAS.clear()
             CAPAS[k] = capa_bloque(b)
