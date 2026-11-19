@@ -218,7 +218,7 @@ def capa_bloque(b):
     while d0.textlength(" ".join(ws), font=f) > 960 and px > 50: px -= 4; f = F("Poppins-ExtraBold.ttf", px)
     return capa_texto([linea], px, H * .55)
 
-PROGRESIVO = "--progresivo" in sys.argv
+PROGRESIVO = "--bloques" not in sys.argv     # estilo fijo: palabra por palabra (usa --bloques para el estilo anterior)
 
 def sprites_bloque(b):
     """Una imagen pequeña por palabra, ya colocada donde va en la línea completa."""
