@@ -39,6 +39,8 @@ wR = arm_w(945, 330, 1075, 308, -1)
 tdist = np.sqrt((xx-990)**2 + (yy-490)**2)
 wT = ss(15, 90, tdist) * ss(1000, 1040, xx) * ss(330, 365, yy) * ss(545, 505, yy) * ss(1215, 1185, xx)
 
+wH = ss(1.0, 0.7, np.sqrt(((xx-870)/170)**2 + ((yy-215)/150)**2)) * ss(345, 300, yy)
+
 # stars for twinkling
 g = cv2.cvtColor(src.astype(np.uint8), cv2.COLOR_BGR2GRAY).astype(np.float32)
 hi = np.clip(g - cv2.GaussianBlur(g, (0,0), 4), 0, 255)
@@ -50,9 +52,9 @@ speed = cv2.resize(rng.integers(1,3,(H//6, W//6)).astype(np.float32), (W,H), int
 
 # particles: river sparkles + rising energy motes toward the hands
 P = []
-for i in range(70):   # river sparkles drifting along the flow
+for i in range(110):   # river sparkles drifting along the flow
     y0 = rng.uniform(520, 760); P.append(('river', rng.uniform(-200, W), y0, rng.random(), rng.integers(1,3), rng.uniform(1.2,2.6)))
-for i in range(36):   # motes floating up around the hands / body
+for i in range(60):   # motes floating up around the hands / body
     hx = rng.choice([705, 1075, 870]); P.append(('rise', hx + rng.normal(0,55), rng.uniform(380,560), rng.random(), rng.integers(1,3), rng.uniform(1.0,2.2)))
 cols = [(255,240,120),(255,170,230),(140,230,255),(255,255,255)]
 
@@ -64,41 +66,44 @@ for f in range(N):
     a2 = 2*th                                        # 4 s cycle for body motions
     dx = np.zeros((H,W), np.float32); dy = np.zeros((H,W), np.float32)
     # nebula drift (slow, low-frequency, background only)
-    ndx = 3.5*np.sin(xx/170 + yy/230 + th) + 2.0*np.sin(yy/120 - xx/310 + 2*th + 1.3)
-    ndy = 3.0*np.cos(xx/210 - yy/160 + th + 0.7) + 1.5*np.sin(xx/95 + 2*th)
+    ndx = 6.0*np.sin(xx/170 + yy/230 + th) + 3.5*np.sin(yy/120 - xx/310 + 2*th + 1.3)
+    ndy = 5.0*np.cos(xx/210 - yy/160 + th + 0.7) + 2.5*np.sin(xx/95 + 2*th)
     dx += ndx*free*(1-river); dy += ndy*free*(1-river)
     # river: travelling ripples that move rightward/up with the stream
     rw = river*free*(1-stones)
-    dx += rw*(2.6*np.sin(xx/38 - yy/90 - 3*th) + 1.4*np.sin(xx/17 + yy/41 - 4*th))
-    dy += rw*(1.8*np.sin(xx/52 + yy/30 - 3*th + 1.0) + 0.9*np.cos(xx/23 - 4*th))
+    dx += rw*(4.0*np.sin(xx/38 - yy/90 - 3*th) + 1.4*np.sin(xx/17 + yy/41 - 4*th))
+    dy += rw*(2.8*np.sin(xx/52 + yy/30 - 3*th + 1.0) + 0.9*np.cos(xx/23 - 4*th))
     # cat float bob
-    bob = 7.0*np.sin(a2)
+    bob = 12.0*np.sin(a2)
+    sway = 5.0*np.sin(th + 0.4)
+    dx += cat*sway
     dy += cat*bob
     # arms: graceful raise/lower (rotation about shoulders), mirrored
-    ang = np.deg2rad(11)*np.sin(a2 + 0.6)
+    ang = np.deg2rad(18)*np.sin(a2 + 0.6)
     lx, ly = rot_field(800, 338+bob, ang, wL); dx += lx; dy += ly
     rx, ry = rot_field(945, 330+bob, -ang, wR); dx += rx; dy += ry
+    hx_, hy_ = rot_field(870, 330+bob, np.deg2rad(4)*np.sin(a2 + 1.8), wH); dx += hx_; dy += hy_
     # tail sway, lagging behind the arms
-    tx, ty = rot_field(990, 490+bob, np.deg2rad(7)*np.sin(a2 - 1.2), wT); dx += tx; dy += ty
-    frame = cv2.remap(src, xx-dx, yy-dy, cv2.INTER_CUBIC, borderMode=cv2.BORDER_REFLECT)
-    # twinkle
+    tx, ty = rot_field(990, 490+bob, np.deg2rad(13)*np.sin(a2 - 1.2), wT); dx += tx; dy += ty
+    # twinkle (applied before warping so it travels with the stars)
     tw = np.sin(speed*th + phase)
-    frame += (star*hi_w*np.where(tw>0, 1.6*tw, 0.85*tw))[...,None]
+    base = src + (star*hi_w*np.where(tw>0, 2.2*tw, 0.9*tw))[...,None]
+    frame = np.clip(cv2.remap(base, xx-dx, yy-dy, cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT), 0, 255)
     # river shimmer: soft light bands travelling along stream
     band = (0.5+0.5*np.sin(xx/60 - yy/140 - 3*th))**6
     frame += (band*river*free*0.10)[...,None]*frame
     # eye / body glow pulse
     glow = np.exp(-(((xx-880)/240)**2 + ((yy-300-bob)/200)**2))*cat
-    frame *= (1 + 0.06*(0.5+0.5*np.sin(a2+0.6))*glow)[...,None]
+    frame *= (1 + 0.10*(0.5+0.5*np.sin(a2+0.6))*glow)[...,None]
     # particles
     layer = np.zeros((H,W,3), np.float32)
     for k,(kind,x0,y0,off,n,sz) in enumerate(P):
         p = (n*f/N + off) % 1.0
         life = np.sin(np.pi*p)**1.5
         if kind == 'river':
-            x = x0 + p*260; y = y0 - p*45 + 6*np.sin(TAU*p*2 + off*9)
+            x = x0 + p*340; y = y0 - p*45 + 6*np.sin(TAU*p*2 + off*9)
         else:
-            x = x0 + 12*np.sin(TAU*p + off*7); y = y0 - p*170 + cat[int(np.clip(y0,0,H-1)), int(np.clip(x0,0,W-1))]*bob
+            x = x0 + 12*np.sin(TAU*p + off*7); y = y0 - p*230 + cat[int(np.clip(y0,0,H-1)), int(np.clip(x0,0,W-1))]*bob
         c = cols[k % 4]
         cv2.circle(layer, (int(x*4), int(y*4)), int(sz*4), [ci*life for ci in c], -1, cv2.LINE_AA, 2)
     layer = cv2.GaussianBlur(layer, (0,0), 1.2) + cv2.GaussianBlur(layer, (0,0), 5)*1.5
