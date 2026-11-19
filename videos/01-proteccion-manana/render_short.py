@@ -64,30 +64,14 @@ def silabas(p):
     p = unicodedata.normalize("NFD", p.lower()); p = "".join(c for c in p if unicodedata.category(c) != "Mn")
     return max(1, len(re.findall(r"[aeiouy]+", p)))
 
+import json
+PALABRAS = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "palabras.json"), encoding="utf-8"))
 def tiempos_frases():
-    out = [None] * len(FRASES)
-    for a, b, t0, t1 in GRUPOS:
-        ps = [p for p in PAUSAS if t0 < p[0] and p[1] < t1]
-        habla = (t1 - t0) - sum(p[1] - p[0] for p in ps)
-        pesos = [sum(silabas(w) for w in FRASES[i][0].split()) + 2 for i in range(a, b + 1)]
-        tot = sum(pesos)
-        def reloj(s):
-            t = t0
-            for p0, p1 in ps:
-                if t + s <= p0: return t + s
-                s -= (p0 - t); t = p1
-            return t + s
-        acum, cortes = 0, [t0]
-        for w in pesos[:-1]:
-            acum += w; c = reloj(habla * acum / tot)
-            cerca = min(ps, key=lambda p: abs((p[0] + p[1]) / 2 - c), default=None)
-            if cerca and abs((cerca[0] + cerca[1]) / 2 - c) < 1.3: c = cerca
-            cortes.append(c)
-        cortes.append(t1)
-        for k, i in enumerate(range(a, b + 1)):
-            ini = cortes[k][1] if isinstance(cortes[k], tuple) else cortes[k]
-            fin = cortes[k + 1][0] if isinstance(cortes[k + 1], tuple) else cortes[k + 1]
-            out[i] = (ini, fin)
+    """Inicio y fin de cada frase según la sincronía palabra por palabra (alinear.py)."""
+    out, k = [], 0
+    for txt, _ in FRASES:
+        n = len(txt.split()); ws = PALABRAS[k:k + n]; k += n
+        out.append((ws[0]["t0"], ws[-1]["t1"]))
     return out
 TF = tiempos_frases()
 
@@ -103,26 +87,22 @@ def clave(palabras):
     return max(cand)[1] if cand else None
 
 def bloques():
-    out = []
+    """Grupos de 1 a 3 palabras que nunca cruzan una pausa de la voz."""
+    out, k = [], 0
     for i, (txt, _) in enumerate(FRASES):
+        n = len(txt.split()); ws = PALABRAS[k:k + n]; k += n
         if i == 0: continue                      # la primera frase la cubre el título
-        t0, t1 = TF[i]; ws = txt.split()
-        pesos = [silabas(w) + (0.8 if re.search(r"[,.;:!?»]$", w) else 0) for w in ws]
-        tot = sum(pesos); acc = 0; tw = []
-        for p in pesos: tw.append(t0 + (t1 - t0) * acc / tot); acc += p
         grupo = []
-        def cerrar(fin):
-            if grupo: out.append({"ws": [w for w, _ in grupo], "t0": grupo[0][1], "t1": fin, "frase": i})
-        for k, w in enumerate(ws):
-            grupo.append((w, tw[k]))
-            largo = sum(len(x) for x, _ in grupo) + len(grupo) - 1
-            fin_frase = re.search(r"[,.;:!?»]$", w)
-            if len(grupo) >= 3 or largo >= 15 or fin_frase:
-                nxt = tw[k + 1] if k + 1 < len(ws) else t1
-                cerrar(nxt); grupo = []
-        cerrar(t1)
-    for b in out:
-        b["clave"] = clave(b["ws"])
+        for j, w in enumerate(ws):
+            grupo.append(w)
+            largo = sum(len(x["w"]) for x in grupo) + len(grupo) - 1
+            sig = ws[j + 1] if j + 1 < len(ws) else None
+            corte = (len(grupo) >= 3 or largo >= 15 or re.search(r"[,.;:!?»]$", w["w"])
+                     or sig is None or sig["tramo"] != w["tramo"])
+            if corte:
+                out.append({"ws": [x["w"] for x in grupo], "t0": grupo[0]["t0"], "t1": grupo[-1]["t1"] + 0.15, "frase": i})
+                grupo = []
+    for b in out: b["clave"] = clave(b["ws"])
     return out
 BLOQUES = bloques()
 for k in range(len(BLOQUES) - 1):           # cada bloque dura hasta que entra el siguiente (sin huecos cortos)
