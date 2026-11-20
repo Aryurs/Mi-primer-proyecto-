@@ -1,17 +1,24 @@
 """Portada vertical del Short, con el estilo fijo de los Shorts del canal.
 
 Uso: python3 -I miniatura_short.py <foto.jpg> <carpeta_fuentes> <salida.jpg>
+         [--cx 0.55] [--arriba "ORACIÓN DE LA MAÑANA"] [--lineas "*PROTECCIÓN*|PARA ESTE|NUEVO DÍA"]
+En --lineas, | separa las líneas y *palabra* va en dorado.
 """
 import sys, os
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageEnhance
 
 FOTO, FUENTES, SALIDA = sys.argv[1:4]
+def opcion(nombre, defecto):
+    return sys.argv[sys.argv.index(nombre) + 1] if nombre in sys.argv else defecto
+CX = float(opcion("--cx", "0.55"))
+ARRIBA = opcion("--arriba", "ORACIÓN DE LA MAÑANA")
+LINEAS = opcion("--lineas", "*PROTECCIÓN*|PARA ESTE|NUEVO DÍA")
 W, H = 1080, 1920
 DORADO, BLANCO = (253, 184, 19), (255, 255, 255)
 
 im = Image.open(FOTO).convert("RGB"); w, h = im.size
-cw = h * 9 / 16; cx = 0.55 * w
+cw = h * 9 / 16; cx = CX * w
 x0 = min(max(0, cx - cw / 2), w - cw)
 im = im.crop((int(x0), 0, int(x0 + cw), h)).resize((W, H), Image.LANCZOS)
 im = ImageEnhance.Color(ImageEnhance.Contrast(im).enhance(1.08)).enhance(1.12)
@@ -51,7 +58,8 @@ def texto(lineas, px, y_centro, interlinea=1.08):
     out.alpha_composite(s, (0, 6)); out.alpha_composite(b); out.alpha_composite(txt)
     return out
 
-im.alpha_composite(texto([[("ORACIÓN", True), ("DE", True), ("LA", True), ("MAÑANA", True)]], 46, 330))
-im.alpha_composite(texto([[("PROTECCIÓN", True)], [("PARA", False), ("ESTE", False)], [("NUEVO", False), ("DÍA", False)]], 112, 560))
+def linea(t): return [(w.strip("*"), w.startswith("*")) for w in t.split()]
+im.alpha_composite(texto([[(w, True) for w in ARRIBA.split()]], 46, 330))
+im.alpha_composite(texto([linea(l) for l in LINEAS.split("|")], 112, 560))
 im.convert("RGB").save(SALIDA, quality=94)
 print("listo", SALIDA)
