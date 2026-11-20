@@ -94,7 +94,8 @@ def preparar(clave_):
     im.save(ruta, quality=95); return im
 
 CRUCE = 0.8
-inicios = [(0.0, "prado")] + [(TF[i][0] - 0.3, f) for i, (_, f) in enumerate(FRASES) if f and f != "prado"]
+PRIMERA = FRASES[0][1]
+inicios = [(0.0, PRIMERA)] + [(TF[i][0] - 0.3, f) for i, (_, f) in enumerate(FRASES) if i > 0 and f]
 PLANOS = [(c, t, inicios[k + 1][0] + CRUCE if k + 1 < len(inicios) else DURACION) for k, (t, c) in enumerate(inicios)]
 MOV = [("acercar", 0, 0), ("alejar", 1, 0), ("desplazar", 0, 1), ("acercar", -1, 1), ("alejar", 0, -1),
        ("desplazar", 0, -1), ("acercar", 1, -1), ("alejar", -1, 1)]
