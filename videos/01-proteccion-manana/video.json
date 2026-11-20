@@ -1,0 +1,241 @@
+{
+ "fin_voz": 123.17,
+ "titulo": {
+  "arriba": "*ORACIÓN *PARA",
+  "lineas": [
+   "*PROTECCIÓN Y",
+   "*COBERTURA",
+   "EN ESTE",
+   "NUEVO DÍA"
+  ]
+ },
+ "frases": [
+  [
+   "Esta oración está dirigida a la protección y cobertura divina durante este nuevo día.",
+   "prado"
+  ],
+  [
+   "Oremos.",
+   null
+  ],
+  [
+   "Padre bueno, en este nuevo amanecer nos presentamos delante de ti,",
+   null
+  ],
+  [
+   "primeramente para agradecerte.",
+   null
+  ],
+  [
+   "Gracias por el regalo de la vida,",
+   "bebe"
+  ],
+  [
+   "porque no hemos despertado por casualidad,",
+   "reloj"
+  ],
+  [
+   "sino porque en tu gran misericordia has decidido sostenernos una vez más",
+   "ventana"
+  ],
+  [
+   "con el aliento de tu Espíritu.",
+   null
+  ],
+  [
+   "En este día elevamos una oración de protección,",
+   "hueco"
+  ],
+  [
+   "pidiendo que tú, Señor Jesús, seas el escudo que nos proteja",
+   null
+  ],
+  [
+   "y la coraza que nos blinde.",
+   null
+  ],
+  [
+   "Que cada paso que demos esté bajo tu cuidado y protección,",
+   "colinas"
+  ],
+  [
+   "y que, donde aceche el peligro, llegue primero tu cobertura,",
+   "rayo"
+  ],
+  [
+   "antes de que nos acerquemos a cualquier lugar.",
+   null
+  ],
+  [
+   "Amado Padre, en este día guarda nuestros corazones",
+   "lago"
+  ],
+  [
+   "de todo aquello que nos roba la paz.",
+   null
+  ],
+  [
+   "Aleja las distracciones y las tentaciones.",
+   "nubes"
+  ],
+  [
+   "Que tus ángeles vayan delante de nosotros, abriendo caminos;",
+   null
+  ],
+  [
+   "y si hoy nos corresponde enfrentar decisiones difíciles,",
+   "sol"
+  ],
+  [
+   "trae claridad a nuestros pensamientos para que podamos elegir sabiamente",
+   null
+  ],
+  [
+   "y reconocer aquello que nos conviene.",
+   null
+  ],
+  [
+   "En este día te pido que bendigas mi hogar, mi familia, nuestro trabajo",
+   "familia"
+  ],
+  [
+   "y cada una de las áreas de nuestras vidas.",
+   null
+  ],
+  [
+   "Entregamos este día en tus manos,",
+   "mano"
+  ],
+  [
+   "confiando en que, al terminarlo, podamos decir",
+   null
+  ],
+  [
+   "que fue tu mano bondadosa la que nos sostuvo.",
+   null
+  ],
+  [
+   "Gracias, Señor, porque tú tienes el control.",
+   "brazos"
+  ],
+  [
+   "En el nombre poderoso de Jesús.",
+   "cruz"
+  ],
+  [
+   "Amén.",
+   null
+  ],
+  [
+   "Si esta oración fue de bendición para tu vida, dale «Me gusta»,",
+   "cielo"
+  ],
+  [
+   "escribe AMÉN en los comentarios",
+   null
+  ],
+  [
+   "y compártela con alguien que necesite escuchar estas palabras.",
+   null
+  ],
+  [
+   "¡Tu interacción nos ayuda a llevar el mensaje de Dios a más corazones!",
+   null
+  ]
+ ],
+ "fotos": {
+  "prado": [
+   "8e21430a-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "bebe": [
+   "6880d166-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "reloj": [
+   "8d4c6fcd-image.jpg",
+   0.42,
+   1.0,
+   0.5
+  ],
+  "ventana": [
+   "4977fa5b-image.jpg",
+   0.5,
+   0.62,
+   0.31
+  ],
+  "hueco": [
+   "d578ce58-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "colinas": [
+   "762f8903-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "rayo": [
+   "a06b1a21-image.jpg",
+   0.55,
+   1.0,
+   0.5
+  ],
+  "lago": [
+   "4c0c2be4-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "nubes": [
+   "9719e6c3-image.jpg",
+   0.3375,
+   0.9,
+   0.55
+  ],
+  "sol": [
+   "98e1cf53-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "familia": [
+   "b183e2de-image.jpg",
+   0.58,
+   1.0,
+   0.5
+  ],
+  "mano": [
+   "24f91141-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "brazos": [
+   "8e7c0384-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ],
+  "cruz": [
+   "e1596043-image.jpg",
+   0.4,
+   1.0,
+   0.5
+  ],
+  "cielo": [
+   "207c3c03-image.jpg",
+   0.5,
+   1.0,
+   0.5
+  ]
+ },
+ "agua": {
+  "lago": 0.545
+ }
+}

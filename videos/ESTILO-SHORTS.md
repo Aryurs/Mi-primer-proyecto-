@@ -38,5 +38,12 @@ Elegido el 19 de noviembre de 2026, a partir de los Shorts anteriores del canal.
   «¿TE BENDIJO ESTA ORACIÓN?», botón rojo «SUSCRÍBETE» y botón blanco «DALE LIKE», que entran con un pequeño rebote.
 
 ## Cómo se hace
-- `01-proteccion-manana/alinear.py`: sincroniza cada palabra con la voz usando sus pausas.
-- `01-proteccion-manana/render_short.py`: arma el Short con este estilo.
+Cada video tiene su carpeta (`01-proteccion-manana`, `02-gracias-nuevo-dia`, …) con:
+- `texto.txt`: la oración tal como la lee la voz.
+- `palabras.json`: la sincronía de cada palabra con la voz (la crea `alinear.py`).
+- `video.json`: las frases, la foto que entra con cada frase, el título y las fotos con agua.
+
+Programas compartidos en `videos/`:
+- `alinear.py`: sincroniza cada palabra con la voz usando sus pausas.
+- `render_short.py`: arma el Short (YouTube) o el Reel (`--facebook`), con la portada al inicio (`--portada`).
+- `miniatura_short.py`: crea la portada vertical.

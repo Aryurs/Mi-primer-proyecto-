@@ -1,6 +1,9 @@
-"""Short vertical «Protección para este nuevo día», con el estilo de los Shorts anteriores del canal.
+"""Short o Reel vertical con el estilo fijo del canal (ver ESTILO-SHORTS.md).
 
-Uso: python3 -I render_short.py <carpeta_fotos> <voz.mp3> <musica.mp3> <carpeta_fuentes> <salida.mp4> [--muestras 1,2,3]
+Uso: python3 -I render_short.py <carpeta_fotos> <voz.mp3> <musica.mp3> <carpeta_fuentes> <salida.mp4>
+         --config <carpeta_del_video>/video.json [--facebook] [--portada portada.jpg] [--bloques] [--muestras 1,2,3]
+
+Cada video tiene su carpeta con video.json (frases, fotos, título) y palabras.json (sincronía de alinear.py).
 """
 import sys, os, math, re, subprocess, unicodedata
 import numpy as np
@@ -10,7 +13,11 @@ FOTOS, VOZ, MUSICA, FUENTES, SALIDA = sys.argv[1:6]
 TRABAJO = os.path.join(os.path.dirname(os.path.abspath(SALIDA)), "trabajo-short")
 os.makedirs(TRABAJO, exist_ok=True)
 W, H, FPS = 1080, 1920, 30
-FIN_VOZ = 123.17
+import json
+CONFIG_RUTA = sys.argv[sys.argv.index("--config") + 1]
+CONFIG = json.load(open(CONFIG_RUTA, encoding="utf-8"))
+CARPETA_VIDEO = os.path.dirname(os.path.abspath(CONFIG_RUTA))
+FIN_VOZ = CONFIG["fin_voz"]
 TARJETA = 5.0                       # «¿Te bendijo esta oración?» al final
 DURACION = FIN_VOZ + TARJETA
 DORADO, BLANCO = (253, 184, 19), (255, 255, 255)
@@ -18,54 +25,13 @@ DORADO, BLANCO = (253, 184, 19), (255, 255, 255)
 def F(nombre, px): return ImageFont.truetype(os.path.join(FUENTES, nombre), px)
 
 # ---------- Texto y tiempos de la voz ----------
-PAUSAS = [(6.374, 7.004), (7.653, 8.290), (9.097, 9.554), (13.482, 13.961), (16.109, 16.616),
-          (21.614, 22.103), (29.549, 30.137), (40.600, 41.056), (52.847, 53.381), (59.939, 60.455),
-          (79.892, 80.487), (88.822, 89.394), (98.503, 99.013), (102.575, 103.130), (105.439, 105.924),
-          (106.282, 107.234)]
-FRASES = [  # (texto, foto que entra con la frase)
- ("Esta oración está dirigida a la protección y cobertura divina durante este nuevo día.", "prado"),
- ("Oremos.", None),
- ("Padre bueno, en este nuevo amanecer nos presentamos delante de ti,", None),
- ("primeramente para agradecerte.", None),
- ("Gracias por el regalo de la vida,", "bebe"),
- ("porque no hemos despertado por casualidad,", "reloj"),
- ("sino porque en tu gran misericordia has decidido sostenernos una vez más", "ventana"),
- ("con el aliento de tu Espíritu.", None),
- ("En este día elevamos una oración de protección,", "hueco"),
- ("pidiendo que tú, Señor Jesús, seas el escudo que nos proteja", None),
- ("y la coraza que nos blinde.", None),
- ("Que cada paso que demos esté bajo tu cuidado y protección,", "colinas"),
- ("y que, donde aceche el peligro, llegue primero tu cobertura,", "rayo"),
- ("antes de que nos acerquemos a cualquier lugar.", None),
- ("Amado Padre, en este día guarda nuestros corazones", "lago"),
- ("de todo aquello que nos roba la paz.", None),
- ("Aleja las distracciones y las tentaciones.", "nubes"),
- ("Que tus ángeles vayan delante de nosotros, abriendo caminos;", None),
- ("y si hoy nos corresponde enfrentar decisiones difíciles,", "sol"),
- ("trae claridad a nuestros pensamientos para que podamos elegir sabiamente", None),
- ("y reconocer aquello que nos conviene.", None),
- ("En este día te pido que bendigas mi hogar, mi familia, nuestro trabajo", "familia"),
- ("y cada una de las áreas de nuestras vidas.", None),
- ("Entregamos este día en tus manos,", "mano"),
- ("confiando en que, al terminarlo, podamos decir", None),
- ("que fue tu mano bondadosa la que nos sostuvo.", None),
- ("Gracias, Señor, porque tú tienes el control.", "brazos"),
- ("En el nombre poderoso de Jesús.", "cruz"),
- ("Amén.", None),
- ("Si esta oración fue de bendición para tu vida, dale «Me gusta»,", "cielo"),
- ("escribe AMÉN en los comentarios", None),
- ("y compártela con alguien que necesite escuchar estas palabras.", None),
- ("¡Tu interacción nos ayuda a llevar el mensaje de Dios a más corazones!", None),
-]
-GRUPOS = [(0, 0, 0.0, 6.374), (1, 1, 7.004, 7.653), (2, 3, 8.290, 13.482), (4, 25, 13.961, 98.503),
-          (26, 26, 99.013, 102.575), (27, 27, 103.130, 105.439), (28, 28, 105.924, 106.282), (29, 32, 107.234, FIN_VOZ)]
+FRASES = [(t, f) for t, f in CONFIG["frases"]]       # (texto, foto que entra con la frase)
 
 def silabas(p):
     p = unicodedata.normalize("NFD", p.lower()); p = "".join(c for c in p if unicodedata.category(c) != "Mn")
     return max(1, len(re.findall(r"[aeiouy]+", p)))
 
-import json
-PALABRAS = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "palabras.json"), encoding="utf-8"))
+PALABRAS = json.load(open(os.path.join(CARPETA_VIDEO, "palabras.json"), encoding="utf-8"))
 def tiempos_frases():
     """Inicio y fin de cada frase según la sincronía palabra por palabra (alinear.py)."""
     out, k = [], 0
@@ -110,21 +76,16 @@ for k in range(len(BLOQUES) - 1):           # cada bloque dura hasta que entra e
 
 # ---------- Fotos ----------
 # archivo, centro x del recorte, alto relativo, centro y
-FOTO = {
- "prado": ("8e21430a", .50, 1.0, .5), "bebe": ("6880d166", .50, 1.0, .5), "reloj": ("8d4c6fcd", .42, 1.0, .5),
- "ventana": ("4977fa5b", .50, .62, .31), "hueco": ("d578ce58", .50, 1.0, .5), "colinas": ("762f8903", .50, 1.0, .5),
- "rayo": ("a06b1a21", .55, 1.0, .5), "lago": ("4c0c2be4", .50, 1.0, .5), "nubes": ("9719e6c3", .3375, .9, .55),
- "sol": ("98e1cf53", .50, 1.0, .5), "familia": ("b183e2de", .58, 1.0, .5), "mano": ("24f91141", .50, 1.0, .5),
- "brazos": ("8e7c0384", .50, 1.0, .5), "cruz": ("e1596043", .40, 1.0, .5), "cielo": ("207c3c03", .50, 1.0, .5),
-}
+# clave: [archivo, centro x del recorte, alto relativo, centro y]
+FOTO = CONFIG["fotos"]
 BW, BH = 1350, 2400
-HORIZONTE_LAGO = 0.545
+AGUA = CONFIG.get("agua", {})          # clave: altura del horizonte (0 a 1) en fotos con agua
 
 def preparar(clave_):
     ruta = os.path.join(TRABAJO, clave_ + ".jpg")
     if os.path.exists(ruta): return Image.open(ruta).convert("RGB")
     cod, cx, alto, cy = FOTO[clave_]
-    im = Image.open(os.path.join(FOTOS, cod + "-image.jpg")).convert("RGB"); w, h = im.size
+    im = Image.open(os.path.join(FOTOS, cod)).convert("RGB"); w, h = im.size
     ch = h * alto; cw = ch * 9 / 16
     if cw > w: cw = w; ch = cw * 16 / 9
     x0 = min(max(0, cx * w - cw / 2), w - cw); y0 = min(max(0, cy * h - ch / 2), h - ch)
@@ -153,7 +114,7 @@ def plano(idx, t):
     if tipo == "desplazar": cx, cy = BW / 2, BH / 2 + ly * .85 * (p - .5) * 2 * (dy or 1)
     else: cx, cy = BW / 2 + lx * .5 * (p - .5) * 2 * dx, BH / 2 + ly * .5 * (p - .5) * 2 * dy
     out = im.resize((W, H), Image.BICUBIC, box=(cx - bw / 2, cy - bh / 2, cx + bw / 2, cy + bh / 2))
-    if c == "lago": out = agua(out, t, (HORIZONTE_LAGO * BH - (cy - bh / 2)) / bh * H)
+    if c in AGUA: out = agua(out, t, (AGUA[c] * BH - (cy - bh / 2)) / bh * H)
     return out
 
 def agua(im, t, horizonte):
@@ -241,9 +202,10 @@ def sprites_bloque(b):
     return out
 
 TITULO = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-TITULO.alpha_composite(capa_texto([[("ORACIÓN", True), ("PARA", True)]], 40, H * .37))
-TITULO.alpha_composite(capa_texto([[("PROTECCIÓN", True), ("Y", False)], [("COBERTURA", True)],
-                                   [("EN", False), ("ESTE", False)], [("NUEVO", False), ("DÍA", False)]], 84, H * .50))
+# Título: «ORACIÓN …» pequeño en dorado y el tema en líneas; *palabra* va en dorado
+def _linea(txt): return [(w.strip("*"), w.startswith("*")) for w in txt.split()]
+TITULO.alpha_composite(capa_texto([_linea(CONFIG["titulo"]["arriba"])], 40, H * .37))
+TITULO.alpha_composite(capa_texto([_linea(l) for l in CONFIG["titulo"]["lineas"]], 84, H * .50))
 OREMOS = capa_texto([[("O R E M O S", True)]], 80, H * .5)
 
 def emoji(ch, px):
