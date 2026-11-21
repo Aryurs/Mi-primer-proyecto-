@@ -1,0 +1,42 @@
+# Renueva nuestras fuerzas · Short de YouTube y Reel de Facebook
+
+Solo formato vertical (1080×1920), con el estilo fijo de `videos/ESTILO-SHORTS.md`:
+movimiento en todas las fotos, polvo dorado flotante, agua en movimiento en las fotos con agua
+y la misma música de fondo del video anterior.
+
+- **Short de YouTube:** cierre con el botón rojo «SUSCRÍBETE».
+- **Reel de Facebook:** el mismo video, con el botón azul «SÍGUEME» en el cierre.
+- **Portada:** `miniatura-short.jpg` como primer cuadro (0,5 s), hecha con `fotos/portada-ventana.jpg`.
+  Esa foto no se usa dentro del video.
+
+## Fotos y frase con la que entra cada una
+
+| # | Foto | Entra con |
+|---|---|---|
+| 1 | manantial | «Amado Padre celestial, fuente inagotable de vida y fortaleza» |
+| 2 | oracion | «hoy nos presentamos delante de tu presencia en el poderoso nombre de Jesús» |
+| 3 | ciudad (cielo estrellado) | «Reconocemos que no hay circunstancia de nuestras vidas que pase inadvertida ante tus ojos» |
+| 4 | cansancio | «Señor, hoy ponemos delante de ti el cansancio, el agotamiento profundo…» |
+| 5 | despertar | «Tú eres consciente de que hemos tenido días en los que abrir los ojos…» |
+| 6 | taza | «y hasta las actividades más sencillas nos cuestan realizarlas» |
+| 7 | fisico | «…debilidad y agotamiento físico,» |
+| 8 | mental | «mental» |
+| 9 | lluvia | «y emocional» |
+| 10 | niebla | «Buscamos cada día fuerzas para continuar… supervivencia» |
+| 11 | tormenta | «Dios invencible y fuerte en batalla» |
+| 12 | clamor | «a ti levantamos nuestro clamor» |
+| 13 | tierra | «y pedimos una restauración radical en nuestras vidas» |
+| 14 | aguila | «Renueva nuestras fuerzas» |
+| 15 | brote | «y transforma aquellas áreas que necesitan de tu intervención divina» |
+| 16 | tumba | «Declaramos que el poder que levantó a Cristo Jesús de entre los muertos…» |
+| 17 | cascada | «para revertir todo aquello que nos está robando las fuerzas, la energía y el vigor» |
+| 18 | sendero | «y que tu poder restaurador nos conduzca» |
+| 19 | victoria | «hacia un nuevo tiempo de renovación, restitución y victoria» |
+| 20 | calma | «Gracias, Señor, porque tú tienes el control» |
+| 21 | vela | «En el nombre poderoso de Jesús. Amén.» |
+| — | cierre | «Si esta oración fue de bendición…» (fondo oscurecido sobre la última foto y botón final) |
+
+## Pendiente
+
+- Audio de la voz.
+- Archivo de la música de fondo (la misma del video anterior; no está guardada en el proyecto).
