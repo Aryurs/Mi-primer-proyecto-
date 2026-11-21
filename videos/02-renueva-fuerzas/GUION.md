@@ -19,10 +19,13 @@ y la misma música de fondo del video anterior.
 | 4 | cansancio | «Señor, hoy ponemos delante de ti el cansancio, el agotamiento profundo…» |
 | 5 | despertar | «Tú eres consciente de que hemos tenido días en los que abrir los ojos…» |
 | 6 | taza | «y hasta las actividades más sencillas nos cuestan realizarlas» |
-| 7 | fisico | «…debilidad y agotamiento físico,» |
-| 8 | mental | «mental» |
-| 9 | lluvia | «y emocional» |
-| 10 | niebla | «Buscamos cada día fuerzas para continuar… supervivencia» |
+| 7 | fisico | «porque nos sentimos en un estado crítico de debilidad» |
+| 8 | lluvia | «y agotamiento físico, mental y emocional» |
+| 9 | mental | «Buscamos cada día fuerzas para continuar» |
+| 10 | niebla | «porque, aunque estamos vivos, nos sentimos en un estado de supervivencia» |
+
+(Al principio iban tres fotos en «físico, mental y emocional», pero la voz lo dice en 2 segundos:
+habrían cambiado demasiado rápido. Se repartieron en frases de 3 a 5 segundos.)
 | 11 | tormenta | «Dios invencible y fuerte en batalla» |
 | 12 | clamor | «a ti levantamos nuestro clamor» |
 | 13 | tierra | «y pedimos una restauración radical en nuestras vidas» |
@@ -36,7 +39,16 @@ y la misma música de fondo del video anterior.
 | 21 | vela | «En el nombre poderoso de Jesús. Amén.» |
 | — | cierre | «Si esta oración fue de bendición…» (fondo oscurecido sobre la última foto y botón final) |
 
+## Cómo se arma
+
+```
+python3 -I alinear.py pausas.txt 130.35 texto.txt palabras.json      # texto: render_short.py x x x x x --texto
+python3 -I render_short.py fotos voz.mp3 musica.mp3 fuentes short-youtube.mp4 --portada miniatura-short.jpg
+python3 -I render_short.py fotos voz.mp3 musica.mp3 fuentes reel-facebook.mp4 --portada miniatura-short.jpg --facebook
+```
+
+Pausas: `silencedetect=n=-38dB:d=0.25`. Fin de la voz: 130,35 s.
+
 ## Pendiente
 
-- Audio de la voz.
 - Archivo de la música de fondo (la misma del video anterior; no está guardada en el proyecto).
