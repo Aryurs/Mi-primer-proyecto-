@@ -49,6 +49,8 @@ python3 -I render_short.py fotos voz.mp3 musica.mp3 fuentes reel-facebook.mp4 --
 
 Pausas: `silencedetect=n=-38dB:d=0.25`. Fin de la voz: 130,35 s.
 
-## Pendiente
+## Audio
 
-- Archivo de la música de fondo (la misma del video anterior; no está guardada en el proyecto).
+- Voz: −20,7 LUFS. Música de fondo (meditación 432 Hz, piano y cuencos): −14,5 LUFS, se baja 22 dB
+  para quedar unos 16 dB por debajo de la voz. Mezcla final normalizada a −14 LUFS.
+- Los videos terminados (unos 137 MB cada uno) no se guardan en el repositorio.
