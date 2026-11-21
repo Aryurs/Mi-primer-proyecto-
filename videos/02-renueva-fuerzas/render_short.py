@@ -347,7 +347,7 @@ if __name__ == "__main__":
     audio = os.path.join(TRABAJO, "audio.m4a")
     if os.path.exists(MUSICA):
         subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", VOZ, "-i", MUSICA, "-filter_complex",
-            f"[0:a]apad=whole_dur={DURACION}[v];[1:a]atrim=0:{DURACION},asetpts=PTS-STARTPTS,volume=-21dB,afade=t=in:d=2,"
+            f"[0:a]apad=whole_dur={DURACION}[v];[1:a]atrim=0:{DURACION},asetpts=PTS-STARTPTS,volume=-22dB,afade=t=in:d=2,"
             f"afade=t=out:st={DURACION-3}:d=3,aformat=channel_layouts=mono[m];"
             f"[v][m]amix=inputs=2:duration=first:normalize=0,adelay={int(PRE*1000)}:all=1,loudnorm=I=-14:TP=-1.5:LRA=11,aresample=48000[a]",
             "-map", "[a]", "-c:a", "aac", "-b:a", "192k", audio], check=True)
