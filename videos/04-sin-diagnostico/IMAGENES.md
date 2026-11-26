@@ -25,7 +25,7 @@ Requisitos: verticales, luz baja y cálida, sin textos, logos, caras mirando a c
 | 13 | diente-leon | «Hoy venimos contra todo aquello que intenta robar el aliento y la paz mental.» | Diente de león soltando sus semillas con el viento, a contraluz | `dandelion seeds blowing light` |
 | 14 | roca | «rechazamos toda anomalía en el nombre de Jesucristo.» | Ola rompiendo contra una roca que no se mueve | `waves crashing on rock` |
 | 15 | farol | «Señor, no permitas que el miedo domine…» | Mano sosteniendo un farol encendido en la oscuridad | `hand holding lantern night` |
-| 16 | cadena | «Derribamos todo paradigma de derrota…» | Cadena rota, primer plano | `broken chain` |
+| 16 | candado | «Derribamos todo paradigma de derrota…» | Candado abierto colgando de la cadena, con la llave puesta | `open padlock` |
 | 17 | ancla | «y nos aferramos a la esperanza…» | Ancla con su cuerda junto al mar (Hebreos 6:19) | `anchor rope sea` |
 | 18 | puente | «…nuestra fe no depende de lo que nuestros ojos puedan ver,» | Puente de madera que se pierde en la neblina de la mañana | `wooden bridge morning mist` |
 | 19 | girasoles | «…mañana contemplaremos la gloria de Dios…» | Campo de girasoles al amanecer | `sunflower field sunrise` |
