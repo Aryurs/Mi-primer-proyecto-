@@ -1,4 +1,4 @@
-"""Portada vertical del Short «Por su llaga sanados», con el estilo fijo de los Shorts del canal.
+"""Portada vertical del Short «Cuando no hay diagnóstico», con el estilo fijo de los Shorts del canal.
 
 Uso: python3 -I miniatura_short.py <foto.jpg> <carpeta_fuentes> <salida.jpg>
 """
@@ -52,6 +52,6 @@ def texto(lineas, px, y_centro, interlinea=1.08):
     return out
 
 im.alpha_composite(texto([[("ORACIÓN", True), ("DE", True), ("SANIDAD", True)]], 46, 330))
-im.alpha_composite(texto([[("POR", False), ("SU", False), ("LLAGA", False)], [("SANADOS", True)]], 112, 560))
+im.alpha_composite(texto([[("CUANDO", False), ("NO", False), ("HAY", False)], [("DIAGNÓSTICO", True)]], 112, 560))
 im.convert("RGB").save(SALIDA, quality=94)
 print("listo", SALIDA)
