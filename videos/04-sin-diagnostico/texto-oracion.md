@@ -6,7 +6,7 @@ Padre celestial y soberano absoluto, fuente de vida y sanidad, hoy nos presentam
 
 Cuando la ciencia médica no encuentra un diagnóstico que explique lo que está ocurriendo en el cuerpo, la incertidumbre puede llegar a pesar tanto como los propios síntomas.
 
-Te pedimos que extiendas tu mano sanadora sobre cada persona que está padeciendo esta situación y que reciban la salud que Cristo Jesús nos impartió con su cuerpo glorioso en la cruz del Calvario. Que se haga viva tu Palabra, porque escrito está: «Por su llaga fuimos nosotros curados».
+Te pedimos que extiendas tu mano sanadora sobre cada persona que está padeciendo esta situación y que reciban la salud que Cristo Jesús nos impartió con su cuerpo herido en la cruz del Calvario. Que se haga viva tu Palabra, porque escrito está: «Por su llaga fuimos nosotros curados».
 
 Hoy venimos contra todo aquello que intenta robar el aliento y la paz mental. Rechazamos toda anomalía en el nombre de Jesucristo. Señor, no permitas que el miedo domine ni que la desesperanza apague la fe.
 
