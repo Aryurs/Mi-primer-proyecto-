@@ -14,7 +14,7 @@ Requisitos: verticales, luz baja y cálida, sin textos, logos, caras mirando a c
 | 2 | olivo | «Padre celestial y soberano absoluto, fuente de vida y sanidad» | Olivo con luz dorada entre las hojas (aceite de sanidad, Santiago 5:14) | `olive tree sunlight` |
 | 3 | manos-cama | «hoy nos presentamos… para pedir misericordia…» | Una mano sosteniendo la de otra persona junto a una cama, luz suave | `holding hands bedside comfort` |
 | 4 | cuello | «…síntomas persistentes, molestias, dolencias prolongadas,» | Persona en un sofá tocándose la nuca o el cuello con dolor, sin cara | `neck pain sitting sofa` |
-| 5 | muneca | «dolores migratorios —esos que se desplazan de un lugar a otro—,» | Primer plano de una mano sujetando la muñeca o masajeando la rodilla | `hand holding wrist pain close up` |
+| 5 | pie | «dolores migratorios —esos que se desplazan de un lugar a otro—,» | Manos sujetando el pie con dolor (misma persona de la foto 4: el dolor se mueve de lugar). Recortar arriba para no mostrar el escote | `hand holding wrist pain close up` |
 | 6 | manta | «debilidad y agotamiento inexplicable,» | Persona con una manta sobre los hombros junto a una ventana gris | `woman blanket window sick` |
 | 7 | baston | «situaciones que limitan su movilidad y funcionalidad sin una causa aparente.» | Manos apoyadas sobre un bastón | `hands resting on walking cane` |
 | 8 | radiografia | «Cuando la ciencia médica no encuentra un diagnóstico…» | Médico mirando una radiografía o resultados, sin cara visible | `doctor looking at x-ray` |
