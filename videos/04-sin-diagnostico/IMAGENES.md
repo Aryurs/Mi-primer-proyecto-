@@ -26,7 +26,7 @@ Requisitos: verticales, luz baja y cálida, sin textos, logos, caras mirando a c
 | 14 | roca | «rechazamos toda anomalía en el nombre de Jesucristo.» | Ola rompiendo contra una roca que no se mueve | `waves crashing on rock` |
 | 15 | farol | «Señor, no permitas que el miedo domine…» | Mano sosteniendo un farol encendido en la oscuridad | `hand holding lantern night` |
 | 16 | candado | «Derribamos todo paradigma de derrota…» | Candado abierto colgando de la cadena, con la llave puesta | `open padlock` |
-| 17 | ancla | «y nos aferramos a la esperanza…» | Ancla con su cuerda junto al mar (Hebreos 6:19) | `anchor rope sea` |
+| 17 | ancla | «y nos aferramos a la esperanza…» | Cuerda gruesa amarrada a un poste de madera en la playa, con el sol entre los nudos | `rope tied post beach sunset` |
 | 18 | puente | «…nuestra fe no depende de lo que nuestros ojos puedan ver,» | Puente de madera que se pierde en la neblina de la mañana | `wooden bridge morning mist` |
 | 19 | girasoles | «…mañana contemplaremos la gloria de Dios…» | Campo de girasoles al amanecer | `sunflower field sunrise` |
 | 20 | caminar | «Gracias, Señor, porque tú tienes el control.» | Persona caminando descalza y libre por el pasto con sol (movilidad devuelta) | `woman walking barefoot grass sunlight` |
