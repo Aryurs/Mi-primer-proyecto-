@@ -6,17 +6,15 @@ Bendito y soberano Dios, fuente inagotable de vida y de misericordia, nos presen
 
 Padre amado, hoy ponemos en tus manos a todas aquellas personas que se encuentran ante un diagnóstico médico que, humanamente, parece amenazar su vida y su futuro.
 
-Señor, tú conoces el profundo impacto emocional, el dolor y la angustia que las invaden, así como la manera en que su tranquilidad se ve reemplazada por el miedo y la incertidumbre.
+Señor, tú conoces el profundo impacto emocional, el dolor y la angustia que las invaden, y el miedo y la incertidumbre que han reemplazado su tranquilidad.
 
-Sabemos que una noticia como esta no solo conmueve profundamente al paciente, sino que también estremece el corazón de sus familiares. Por eso, Señor, te pedimos que fortalezcas sus corazones.
+Fortalece el corazón de sus familias, y concede a los médicos y a todo el personal de salud sabiduría y discernimiento para tomar las mejores decisiones.
 
-Ponemos también en tus manos a los médicos y a todo el personal de salud. Ilumina sus mentes y concédeles sabiduría y discernimiento para tomar las mejores decisiones en beneficio de cada paciente.
-
-Padre amado, te pedimos por cada persona enferma. Manifiesta tu poder sanador en cada órgano, en cada tejido y en cada célula que se encuentre afectada. Creemos que solo tú tienes el poder para detener el avance progresivo y degenerativo de la enfermedad.
+Manifiesta tu poder sanador en cada órgano, en cada tejido y en cada célula que se encuentre afectada. Creemos que solo tú tienes el poder para detener el avance progresivo y degenerativo de la enfermedad.
 
 Cuando la ciencia médica llega a su límite y dice que no hay cura, que el daño es irreversible, suplicamos tu intervención divina. Que se haga visible tu poder sanador por medio del sacrificio de Cristo Jesús, quien fue molido, azotado y traspasado, cargando en su cuerpo el peso de todas las enfermedades.
 
-Hoy nos aferramos a las promesas del pacto eterno, con la plena confianza de que para nuestro Padre celestial no hay nada imposible y de que él puede obrar el milagro de la recuperación.
+Hoy nos aferramos a las promesas del pacto eterno, confiando en que para ti no hay nada imposible.
 
 Espíritu Santo, desciende como rocío refrescante, consume toda raíz oculta de enfermedad y manifiesta en cada vida la sanidad que Cristo ya compró para nosotros.
 
