@@ -31,3 +31,4 @@ Portada (exclusiva): persona pequeña de pie bajo un cielo inmenso al amanecer. 
 Titular: «ORACIÓN ANTE UN DIAGNÓSTICO DIFÍCIL · DIOS TIENE LA **ÚLTIMA** PALABRA».
 
 Recortes especiales: pared → recorte cerrado (centro x .50, alto .50, centro y .43) para dejar fuera el logo de la camiseta.
+Retoques: estetoscopio → difuminar la inscripción del borde del disco (x .26-.33, y .62-.70) y la marca del tubo arriba (x .37-.41, y .02-.08).
