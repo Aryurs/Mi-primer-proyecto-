@@ -6,7 +6,7 @@ Requisitos: verticales, luz baja y cálida, sin textos, marcas ni caras mirando 
 
 | # | Foto | Entra con | Qué buscar | Buscar |
 |---|---|---|---|---|
-| 1 | sobre | Introducción | Sobre de resultados cerrado sobre una mesa, de noche, con luz de lámpara | `envelope on table lamp night` |
+| 1 | sobre | Introducción | Mesa de noche con lámpara, teléfono y una mano que toma un vaso de agua (la llamada con la noticia) | `envelope on table lamp night` |
 | 2 | agua | «Bendito y soberano Dios, fuente inagotable de vida y de misericordia,» | Manos en forma de cuenco recibiendo agua que cae, con luz | `hands cupped water light` |
 | 3 | intercesion | «…en el nombre de Jesucristo, quien intercede por nosotros.» | Varias manos unidas orando en círculo | `group holding hands praying` |
 | 4 | pared | «Padre amado, hoy ponemos en tus manos…» | Persona con la frente apoyada en la pared, de perfil (Isaías 38:2) | `forehead against wall sad` |
