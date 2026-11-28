@@ -29,3 +29,5 @@ Requisitos: verticales, luz baja y cálida, sin textos, marcas ni caras mirando 
 
 Portada (exclusiva): persona pequeña de pie bajo un cielo inmenso al amanecer. `small person vast sky sunrise`.
 Titular: «ORACIÓN ANTE UN DIAGNÓSTICO DIFÍCIL · DIOS TIENE LA **ÚLTIMA** PALABRA».
+
+Recortes especiales: pared → recorte cerrado (centro x .50, alto .50, centro y .43) para dejar fuera el logo de la camiseta.
