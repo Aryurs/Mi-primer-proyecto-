@@ -12,7 +12,7 @@ Requisitos: verticales, luz baja y cálida, sin textos, marcas ni caras mirando 
 | 4 | pared | «Padre amado, hoy ponemos en tus manos…» | Persona con la frente apoyada en la pared, de perfil (Isaías 38:2) | `forehead against wall sad` |
 | 5 | gota | «Señor, tú conoces el profundo impacto emocional, el dolor y la angustia…» | Gota que cae sobre el agua y forma ondas, fondo negro | `water drop ripple dark` |
 | 6 | lluvia-noche | «…y el miedo y la incertidumbre que han reemplazado su tranquilidad.» | Ventana con lluvia de noche, luces desenfocadas | `rainy window night` |
-| 7 | abrazo-familia | «Fortalece el corazón de sus familias,» | Familia abrazándose, de espaldas o de perfil, luz cálida de casa | `family embracing comfort` |
+| 7 | abrazo-familia | «Fortalece el corazón de sus familias,» | Manos de la familia sosteniendo el brazo del enfermo con pulsera de hospital | `holding hands hospital bracelet` |
 | 8 | estetoscopio | «…y concede a los médicos y a todo el personal de salud sabiduría…» | Estetoscopio sobre una mesa oscura | `stethoscope dark table` |
 | 9 | hoja | «Manifiesta tu poder sanador en cada órgano, en cada tejido y en cada célula…» | Hoja a contraluz donde se ven todas sus venas | `leaf veins backlight macro` |
 | 10 | mano-tormenta | «Creemos que solo tú tienes el poder para detener el avance…» | Mano levantada con la palma abierta frente a un cielo de tormenta | `hand raised storm sky` |
